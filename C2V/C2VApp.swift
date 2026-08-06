@@ -24,10 +24,16 @@ struct C2VApp: App {
     }()
 
     var body: some Scene {
-        MenuBarExtra("C2V", systemImage: "doc.on.clipboard") {
+        MenuBarExtra {
             ContentView()
                 .environmentObject(monitor)
                 .modelContainer(sharedModelContainer)
+        } label: {
+            Image("TrayIcon")
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
         }
         .menuBarExtraStyle(.window)
     }

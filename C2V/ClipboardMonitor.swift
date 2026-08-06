@@ -13,6 +13,7 @@ final class ClipboardMonitor: ObservableObject {
     private var timer: Timer?
     private var lastChangeCount: Int
     private let pasteboard = NSPasteboard.general
+    private var modelContext: ModelContext?
 
     @Published var lastCopiedText: String?
 
@@ -23,12 +24,15 @@ final class ClipboardMonitor: ObservableObject {
     func startMonitoring(modelContext: ModelContext) {
         stopMonitoring()
 
+        self.modelContext = modelContext
         // Initial sync of lastChangeCount
         lastChangeCount = pasteboard.changeCount
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
-                self?.checkPasteboard(modelContext: modelContext)
+                if let self, let context = self.modelContext {
+                    checkPasteboard(modelContext: context)
+                }
             }
         }
     }

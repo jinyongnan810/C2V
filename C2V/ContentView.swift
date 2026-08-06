@@ -418,25 +418,25 @@ struct CopiedItemRow: View {
 
                     Spacer()
 
-                    if isHovered {
-                        HStack(spacing: 8) {
-                            Button(action: onTogglePin) {
-                                Image(systemName: item.isPinned ? "pin.slash.fill" : "pin")
-                                    .font(.caption)
-                                    .foregroundColor(item.isPinned ? .orange : .secondary)
-                            }
-                            .buttonStyle(.plain)
-                            .help(item.isPinned ? "Unpin" : "Pin to Top")
-
-                            Button(action: onDelete) {
-                                Image(systemName: "trash")
-                                    .font(.caption)
-                                    .foregroundColor(.red.opacity(0.8))
-                            }
-                            .buttonStyle(.plain)
-                            .help("Delete")
+                    HStack(spacing: 8) {
+                        Button(action: onTogglePin) {
+                            Image(systemName: item.isPinned ? "pin.slash.fill" : "pin")
+                                .font(.caption)
+                                .foregroundColor(item.isPinned ? .orange : .secondary)
                         }
+                        .buttonStyle(.plain)
+                        .help(item.isPinned ? "Unpin" : "Pin to Top")
+
+                        Button(action: onDelete) {
+                            Image(systemName: "trash")
+                                .font(.caption)
+                                .foregroundColor(.red.opacity(0.8))
+                        }
+                        .buttonStyle(.plain)
+                        .help("Delete")
                     }
+                    .opacity(isHovered ? 1 : 0)
+                    .allowsHitTesting(isHovered)
                 }
             }
             .padding(10)

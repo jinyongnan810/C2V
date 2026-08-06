@@ -2,18 +2,26 @@
 //  C2VTests.swift
 //  C2VTests
 //
-//  Created by Yuunan kin on 2026/08/06.
-//
 
-import Testing
 @testable import C2V
+import Foundation
+import SwiftData
+import Testing
 
 struct C2VTests {
+    @Test func testCopiedItemInitialization() throws {
+        let text = "Hello C2V Clipboard"
+        let item = CopiedItem(text: text)
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        // Swift Testing Documentation
-        // https://developer.apple.com/documentation/testing
+        #expect(item.text == text)
+        #expect(item.isPinned == false)
     }
 
+    @Test func testItemPinningToggle() throws {
+        let item = CopiedItem(text: "Test snippet")
+        #expect(item.isPinned == false)
+
+        item.isPinned.toggle()
+        #expect(item.isPinned == true)
+    }
 }

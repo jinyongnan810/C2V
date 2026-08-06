@@ -2,17 +2,17 @@
 //  C2VApp.swift
 //  C2V
 //
-//  Created by Yuunan kin on 2026/08/06.
-//
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct C2VApp: App {
+    @StateObject private var monitor = ClipboardMonitor()
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            CopiedItem.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -24,9 +24,11 @@ struct C2VApp: App {
     }()
 
     var body: some Scene {
-        WindowGroup {
+        MenuBarExtra("C2V", systemImage: "doc.on.clipboard") {
             ContentView()
+                .environmentObject(monitor)
+                .modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
+        .menuBarExtraStyle(.window)
     }
 }

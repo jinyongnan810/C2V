@@ -21,21 +21,6 @@ final class LaunchAtLoginManager: ObservableObject {
         }
     }
 
-    func toggleLaunchAtLogin() {
-        if #available(macOS 13.0, *) {
-            do {
-                if SMAppService.mainApp.status == .enabled {
-                    try SMAppService.mainApp.unregister()
-                } else {
-                    try SMAppService.mainApp.register()
-                }
-                checkStatus()
-            } catch {
-                print("Failed to toggle Launch at Login: \(error)")
-            }
-        }
-    }
-
     func setLaunchAtLogin(enabled: Bool) {
         if #available(macOS 13.0, *) {
             do {

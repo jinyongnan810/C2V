@@ -8,15 +8,14 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openSettings) private var openSettings
     @Query private var items: [CopiedItem]
 
     @EnvironmentObject private var monitor: ClipboardMonitor
-    @StateObject private var launchAtLogin = LaunchAtLoginManager()
 
     @State private var searchText: String = ""
     @State private var filterPinnedOnly: Bool = false
     @State private var copiedToastItemText: String? = nil
-    @State private var showSettingsPopover: Bool = false
     @State private var showClearConfirmation: Bool = false
 
     var filteredItems: [CopiedItem] {
@@ -33,61 +32,50 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            headerView
+        ZStack {
+            VStack(spacing: 0) {
+                // Header
+                headerView
 
-            Divider()
+                Divider()
 
-            // Search & Filter Bar
-            searchAndFilterBar
+                // Search & Filter Bar
+                searchAndFilterBar
 
-            Divider()
+                Divider()
 
-            // Clipboard List
-            ZStack {
-                if filteredItems.isEmpty {
-                    emptyStateView
-                } else {
-                    itemList
+                // Clipboard List
+                ZStack {
+                    if filteredItems.isEmpty {
+                        emptyStateView
+                    } else {
+                        itemList
+                    }
+
+                    // Toast notification when item is copied
+                    if let text = copiedToastItemText {
+                        toastOverlay(text: text)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: copiedToastItemText)
+                    }
                 }
 
-                // Toast notification when item is copied
-                if let text = copiedToastItemText {
-                    toastOverlay(text: text)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: copiedToastItemText)
-                }
+                Divider()
+
+                // Footer
+                footerView
             }
 
-            Divider()
-
-            // Footer
-            footerView
+            // Confirmation Overlay for MenuBarExtra
+            if showClearConfirmation {
+                clearConfirmationOverlay
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+            }
         }
         .frame(width: 360, height: 480)
         .background(Color(NSColor.windowBackgroundColor))
         .onAppear {
             monitor.startMonitoring(modelContext: modelContext)
-            launchAtLogin.checkStatus()
-        }
-        .confirmationDialog(
-            "Clear History",
-            isPresented: $showClearConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Clear All Unpinned Items", role: .destructive) {
-                clearUnpinnedItems()
-            }
-            Button("Clear Everything", role: .destructive) {
-                clearAllItems()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Are you sure you want to delete stored copied text history?")
-        }
-        .popover(isPresented: $showSettingsPopover, arrowEdge: .top) {
-            settingsPopoverView
         }
     }
 
@@ -96,9 +84,11 @@ struct ContentView: View {
     private var headerView: some View {
         HStack {
             HStack(spacing: 6) {
-                Image(systemName: "doc.on.clipboard.fill")
-                    .font(.title3)
-                    .foregroundStyle(.blue)
+                Image("TrayIcon")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
                 Text("C2V")
                     .font(.headline)
                     .fontWeight(.bold)
@@ -118,7 +108,7 @@ struct ContentView: View {
                 .help("Clear History")
 
                 Button {
-                    showSettingsPopover.toggle()
+                    openSettingsWindow()
                 } label: {
                     Image(systemName: "gearshape")
                         .font(.body)
@@ -269,54 +259,102 @@ struct ContentView: View {
         .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
     }
 
-    // MARK: - Settings Popover
+    private func openSettingsWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        if #available(macOS 14.0, *) {
+            openSettings()
+        } else {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        }
+    }
 
-    private var settingsPopoverView: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text("Settings")
-                    .font(.headline)
-                Spacer()
-                Button {
-                    showSettingsPopover = false
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
+    // MARK: - Clear Confirmation Overlay
+
+    private var clearConfirmationOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        showClearConfirmation = false
+                    }
                 }
-                .buttonStyle(.plain)
-            }
 
-            Divider()
+            VStack(spacing: 14) {
+                Image(systemName: "trash.circle.fill")
+                    .font(.system(size: 36))
+                    .foregroundColor(.red)
 
-            Toggle(isOn: Binding(
-                get: { launchAtLogin.isEnabled },
-                set: { launchAtLogin.setLaunchAtLogin(enabled: $0) }
-            )) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Auto Start on Boot")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    Text("Launch C2V automatically when macOS starts.")
+                VStack(spacing: 4) {
+                    Text("Clear Clipboard History?")
+                        .font(.headline)
+                        .fontWeight(.bold)
+
+                    Text("This action cannot be undone. Choose whether to keep pinned items or clear everything.")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 4)
                 }
-            }
-            .toggleStyle(.switch)
 
-            Divider()
+                VStack(spacing: 8) {
+                    Button(role: .destructive) {
+                        withAnimation {
+                            clearUnpinnedItems()
+                            showClearConfirmation = false
+                        }
+                    } label: {
+                        Text("Clear Unpinned Items")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("C2V Clipboard History")
-                    .font(.caption)
-                    .fontWeight(.semibold)
+                    Button(role: .destructive) {
+                        withAnimation {
+                            clearAllItems()
+                            showClearConfirmation = false
+                        }
+                    } label: {
+                        Text("Clear Everything")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+
+                    Button(role: .cancel) {
+                        withAnimation {
+                            showClearConfirmation = false
+                        }
+                    } label: {
+                        Text("Cancel")
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.plain)
                     .foregroundColor(.secondary)
-                Text("Stores up to 100 text snippets locally on your Mac. Files and images are excluded.")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                }
+                .padding(.top, 4)
             }
+            .padding(18)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color(NSColor.windowBackgroundColor))
+                    .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+            )
+            .padding(.horizontal, 28)
         }
-        .padding(16)
-        .frame(width: 280)
     }
 
     // MARK: - Actions

@@ -29,4 +29,4 @@ This repository contains **C2V**, a lightweight, modern macOS menu bar applicati
 Before completing any task:
 1. Run `make lint` to format all Swift code.
 2. Build the project using Xcode MCP (`BuildProject`).
-3. Run test suites using Xcode MCP (`RunAllTests`).
+3. Do Not Run test suites unless told to. 

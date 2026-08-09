@@ -4,18 +4,19 @@
 //
 
 import AppKit
-import Combine
 import Foundation
+import Observation
 import SwiftData
 
 @MainActor
-final class ClipboardMonitor: ObservableObject {
-    private var timer: Timer?
-    private var lastChangeCount: Int
-    private let pasteboard = NSPasteboard.general
-    private var modelContext: ModelContext?
+@Observable
+final class ClipboardMonitor {
+    @ObservationIgnored private var timer: Timer?
+    @ObservationIgnored private var lastChangeCount: Int
+    @ObservationIgnored private let pasteboard = NSPasteboard.general
+    @ObservationIgnored private var modelContext: ModelContext?
 
-    @Published var lastCopiedText: String?
+    var lastCopiedText: String?
 
     init() {
         lastChangeCount = pasteboard.changeCount

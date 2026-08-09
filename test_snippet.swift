@@ -1,9 +1,10 @@
 import AppKit
-import Combine
+import Observation
 import SwiftData
 
 @MainActor
-final class TestClass: ObservableObject {
+@Observable
+final class TestClass {
     private var modelContext: ModelContext?
     func start(modelContext: ModelContext) {
         self.modelContext = modelContext

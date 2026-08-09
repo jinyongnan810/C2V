@@ -3,13 +3,14 @@
 //  C2V
 //
 
-import Combine
 import Foundation
+import Observation
 import ServiceManagement
 
 @MainActor
-final class LaunchAtLoginManager: ObservableObject {
-    @Published var isEnabled: Bool = false
+@Observable
+final class LaunchAtLoginManager {
+    var isEnabled: Bool = false
 
     init() {
         checkStatus()

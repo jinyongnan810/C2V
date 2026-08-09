@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var launchAtLogin = LaunchAtLoginManager()
+    @State private var launchAtLogin = LaunchAtLoginManager()
 
     var body: some View {
         Form {

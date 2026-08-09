@@ -11,7 +11,7 @@ struct ContentView: View {
     @Environment(\.openSettings) private var openSettings
     @Query private var items: [CopiedItem]
 
-    @EnvironmentObject private var monitor: ClipboardMonitor
+    @Environment(ClipboardMonitor.self) private var monitor: ClipboardMonitor
 
     @State private var searchText: String = ""
     @State private var filterPinnedOnly: Bool = false
@@ -498,6 +498,6 @@ struct CopiedItemRow: View {
 
 #Preview {
     ContentView()
-        .environmentObject(ClipboardMonitor())
+        .environment(ClipboardMonitor())
         .modelContainer(for: CopiedItem.self, inMemory: true)
 }

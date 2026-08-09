@@ -8,7 +8,7 @@ import SwiftUI
 
 @main
 struct C2VApp: App {
-    @StateObject private var monitor = ClipboardMonitor()
+    @State private var monitor = ClipboardMonitor()
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -26,7 +26,7 @@ struct C2VApp: App {
     var body: some Scene {
         MenuBarExtra {
             ContentView()
-                .environmentObject(monitor)
+                .environment(monitor)
                 .modelContainer(sharedModelContainer)
         } label: {
             Image("TrayIcon")

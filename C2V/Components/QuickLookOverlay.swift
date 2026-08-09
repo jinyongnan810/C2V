@@ -13,6 +13,10 @@ struct QuickLookOverlay: View {
     let onTogglePin: () -> Void
     let onDelete: () -> Void
 
+    private var formattedDate: String {
+        item.createdAt.formatted(date: .abbreviated, time: .shortened)
+    }
+
     private var wordCount: Int {
         item.text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
     }
@@ -58,10 +62,14 @@ struct QuickLookOverlay: View {
                 }
 
                 // Item Metadata Stats Bar
-                HStack(spacing: 16) {
-                    Label("\(item.text.count) chars", systemImage: "textformat")
-                    Label("\(wordCount) words", systemImage: "doc.text")
-                    Label("\(lineCount) lines", systemImage: "line.3.horizontal")
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(formattedDate, systemImage: "clock")
+
+                    HStack(spacing: 16) {
+                        Label("\(item.text.count) chars", systemImage: "textformat")
+                        Label("\(wordCount) words", systemImage: "doc.text")
+                        Label("\(lineCount) lines", systemImage: "line.3.horizontal")
+                    }
                 }
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -70,7 +78,7 @@ struct QuickLookOverlay: View {
                 .padding(.vertical, 6)
                 .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 6))
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel(Text("\(item.text.count) characters, \(wordCount) words, \(lineCount) lines"))
+                .accessibilityLabel(Text("\(formattedDate), \(item.text.count) characters, \(wordCount) words, \(lineCount) lines"))
 
                 // Scrollable Full Text Display
                 ScrollView {

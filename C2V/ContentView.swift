@@ -239,11 +239,28 @@ struct ContentView: View {
 
     // MARK: - Footer
 
+    private var pinnedCount: Int {
+        items.filter(\.isPinned).count
+    }
+
     private var footerView: some View {
         HStack {
-            Text("\(filteredItems.count) item\(filteredItems.count == 1 ? "" : "s")")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            HStack(spacing: 4) {
+                Text("\(filteredItems.count) item\(filteredItems.count == 1 ? "" : "s")")
+
+                if pinnedCount > 0 {
+                    Text("•")
+                        .foregroundColor(.secondary)
+                    HStack(spacing: 3) {
+                        Image(systemName: "pin.fill")
+                            .font(.caption2)
+                            .foregroundColor(.orange)
+                        Text("\(pinnedCount) pinned")
+                    }
+                }
+            }
+            .font(.caption)
+            .foregroundColor(.secondary)
 
             Spacer()
 

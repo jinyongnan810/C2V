@@ -45,8 +45,7 @@ struct ClearConfirmationOverlay: View {
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 4)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
+                    .liquidGlassButtonStyle(isProminent: true, tint: .red)
 
                     Button(role: .destructive) {
                         onClearAll()
@@ -57,8 +56,7 @@ struct ClearConfirmationOverlay: View {
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 4)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
+                    .liquidGlassButtonStyle(isProminent: false, tint: .red)
 
                     Button(role: .cancel) {
                         onCancel()
@@ -68,21 +66,13 @@ struct ClearConfirmationOverlay: View {
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 4)
                     }
-                    .buttonStyle(.plain)
-                    .foregroundColor(.secondary)
+                    .liquidGlassButtonStyle(isProminent: false, tint: .primary)
                 }
                 .padding(.top, 4)
             }
             .padding(18)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color(NSColor.windowBackgroundColor))
-                    .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
+            .liquidGlassEffect(.regular, in: RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 28)
         }
     }

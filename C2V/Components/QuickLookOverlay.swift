@@ -45,16 +45,18 @@ struct QuickLookOverlay: View {
                     Button {
                         onClose()
                     } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.primary)
+                            .frame(width: 28, height: 28)
+                            .liquidGlassEffect(in: Circle())
                     }
                     .buttonStyle(.plain)
                     .help("Close")
                 }
 
                 // Item Metadata Stats Bar
-                HStack(spacing: 12) {
+                HStack(spacing: 16) {
                     Label("\(item.text.count) chars", systemImage: "textformat")
                     Label("\(wordCount) words", systemImage: "doc.text")
                     Label("\(lineCount) lines", systemImage: "line.3.horizontal")
@@ -64,8 +66,7 @@ struct QuickLookOverlay: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(Color.secondary.opacity(0.1))
-                .cornerRadius(6)
+                .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 6))
 
                 // Scrollable Full Text Display
                 ScrollView {
@@ -76,12 +77,6 @@ struct QuickLookOverlay: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(10)
                 }
-                .background(Color(NSColor.textBackgroundColor))
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                )
 
                 // Footer Actions
                 HStack(spacing: 10) {
@@ -97,8 +92,7 @@ struct QuickLookOverlay: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 4)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(isQuickLookCopied ? .green : .accentColor)
+                    .liquidGlassButtonStyle(isProminent: true, tint: isQuickLookCopied ? .green : .accentColor)
 
                     Button {
                         onTogglePin()
@@ -111,8 +105,7 @@ struct QuickLookOverlay: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 4)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(item.isPinned ? .orange : .primary)
+                    .liquidGlassButtonStyle(isProminent: false, tint: item.isPinned ? .orange : .primary)
 
                     Button(role: .destructive) {
                         onDelete()
@@ -125,21 +118,13 @@ struct QuickLookOverlay: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 4)
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
+                    .liquidGlassButtonStyle(isProminent: false, tint: .red)
                 }
             }
             .padding(16)
             .frame(maxWidth: 320, maxHeight: 420)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color(NSColor.windowBackgroundColor))
-                    .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
+            .liquidGlassEffect(.regular, in: RoundedRectangle(cornerRadius: 14))
+            .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 20)
         }
     }

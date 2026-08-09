@@ -48,11 +48,13 @@ struct CopiedItemRow: View {
 
                     Spacer()
 
-                    HStack(spacing: 8) {
+                    HStack(spacing: 6) {
                         Button(action: onQuickLook) {
                             Image(systemName: "eye")
                                 .font(.caption)
                                 .foregroundColor(.accentColor)
+                                .frame(width: 24, height: 24)
+                                .liquidGlassEffect(in: Circle())
                         }
                         .buttonStyle(.plain)
                         .help("Quick Look")
@@ -60,7 +62,9 @@ struct CopiedItemRow: View {
                         Button(action: onTogglePin) {
                             Image(systemName: item.isPinned ? "pin.slash.fill" : "pin")
                                 .font(.caption)
-                                .foregroundColor(item.isPinned ? .orange : .secondary)
+                                .foregroundColor(item.isPinned ? .orange : .primary)
+                                .frame(width: 24, height: 24)
+                                .liquidGlassEffect(in: Circle())
                         }
                         .buttonStyle(.plain)
                         .help(item.isPinned ? "Unpin" : "Pin to Top")
@@ -68,7 +72,9 @@ struct CopiedItemRow: View {
                         Button(action: onDelete) {
                             Image(systemName: "trash")
                                 .font(.caption)
-                                .foregroundColor(.red.opacity(0.8))
+                                .foregroundColor(.red)
+                                .frame(width: 24, height: 24)
+                                .liquidGlassEffect(in: Circle())
                         }
                         .buttonStyle(.plain)
                         .help("Delete")
@@ -80,7 +86,7 @@ struct CopiedItemRow: View {
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isHovered ? Color.secondary.opacity(0.12) : Color(NSColor.controlBackgroundColor).opacity(0.4))
+                    .fill(isHovered ? Color.primary.opacity(0.2) : Color.primary.opacity(0.03))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)

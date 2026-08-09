@@ -130,7 +130,7 @@ struct ContentView: View {
             }
         }
         .frame(width: 360, height: 480)
-        .background(Color(NSColor.windowBackgroundColor))
+        .liquidGlassEffect(in: Rectangle())
         .onAppear {
             monitor.startMonitoring(modelContext: modelContext)
         }
@@ -160,9 +160,11 @@ struct ContentView: View {
                 } label: {
                     Image(systemName: "trash")
                         .font(.body)
+                        .foregroundColor(.primary)
+                        .frame(width: 28, height: 28)
+                        .liquidGlassEffect(in: Circle())
                 }
                 .buttonStyle(.plain)
-                .foregroundColor(.secondary)
                 .help("Clear History")
 
                 Button {
@@ -170,15 +172,17 @@ struct ContentView: View {
                 } label: {
                     Image(systemName: "gearshape")
                         .font(.body)
+                        .foregroundColor(.primary)
+                        .frame(width: 28, height: 28)
+                        .liquidGlassEffect(in: Circle())
                 }
                 .buttonStyle(.plain)
-                .foregroundColor(.secondary)
                 .help("Settings")
             }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+        .liquidGlassEffect(in: Rectangle())
     }
 
     @ContentBuilder
@@ -186,7 +190,7 @@ struct ContentView: View {
         HStack(spacing: 8) {
             HStack(spacing: 6) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.primary.opacity(0.7))
                 TextField("Search copied text...", text: $searchText)
                     .textFieldStyle(.plain)
                     .font(.subheadline)
@@ -196,19 +200,14 @@ struct ContentView: View {
                         searchText = ""
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary.opacity(0.7))
                     }
                     .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(Color(NSColor.textBackgroundColor))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
+            .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 8))
 
             Button {
                 withAnimation {
@@ -217,10 +216,9 @@ struct ContentView: View {
             } label: {
                 Image(systemName: filterPinnedOnly ? "pin.fill" : "pin")
                     .font(.subheadline)
-                    .foregroundColor(filterPinnedOnly ? .orange : .secondary)
-                    .padding(6)
-                    .background(filterPinnedOnly ? Color.orange.opacity(0.15) : Color.clear)
-                    .cornerRadius(6)
+                    .foregroundColor(filterPinnedOnly ? .orange : .primary)
+                    .frame(width: 28, height: 28)
+                    .liquidGlassEffect(in: Circle())
             }
             .buttonStyle(.plain)
             .help(filterPinnedOnly ? "Show All Items" : "Filter Pinned Items")
@@ -319,8 +317,7 @@ struct ContentView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .background(.thinMaterial)
-            .cornerRadius(20)
+            .liquidGlassEffect(in: Capsule())
             .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
             .padding(.bottom, 20)
         }
@@ -353,11 +350,11 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .font(.caption)
-            .foregroundColor(.secondary)
+            .foregroundColor(.primary)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+        .liquidGlassEffect(in: Rectangle())
     }
 
     // MARK: - Helper Methods

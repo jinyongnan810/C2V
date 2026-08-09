@@ -327,7 +327,7 @@ struct ContentView: View {
     private var footerView: some View {
         HStack {
             HStack(spacing: 4) {
-                Text("\(filteredItems.count) item\(filteredItems.count == 1 ? "" : "s")")
+                Text("\(filteredItems.count) items")
 
                 if pinnedCount > 0 {
                     Text("•")

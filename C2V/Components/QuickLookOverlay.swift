@@ -85,7 +85,7 @@ struct QuickLookOverlay: View {
                     } label: {
                         HStack(spacing: 4) {
                             Image(systemName: isQuickLookCopied ? "checkmark" : "doc.on.doc")
-                            Text(isQuickLookCopied ? "Copied!" : "Copy Text")
+                            Text(isQuickLookCopied ? "Copied!" : "Copy")
                         }
                         .font(.subheadline)
                         .fontWeight(.medium)

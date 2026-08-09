@@ -22,6 +22,7 @@ struct ClearConfirmationOverlay: View {
                 Image(systemName: "trash.circle.fill")
                     .font(.system(size: 36))
                     .foregroundColor(.red)
+                    .accessibilityHidden(true)
 
                 VStack(spacing: 4) {
                     Text("Clear Clipboard History?")
@@ -46,6 +47,8 @@ struct ClearConfirmationOverlay: View {
                             .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: true, tint: .red)
+                    .accessibilityLabel(Text("Clear Unpinned Items"))
+                    .accessibilityHint(Text("Deletes all items that are not pinned"))
 
                     Button(role: .destructive) {
                         onClearAll()
@@ -57,6 +60,8 @@ struct ClearConfirmationOverlay: View {
                             .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: false, tint: .red)
+                    .accessibilityLabel(Text("Clear Everything"))
+                    .accessibilityHint(Text("Deletes all clipboard items including pinned items"))
 
                     Button(role: .cancel) {
                         onCancel()
@@ -67,6 +72,8 @@ struct ClearConfirmationOverlay: View {
                             .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: false, tint: .primary)
+                    .accessibilityLabel(Text("Cancel"))
+                    .accessibilityHint(Text("Dismisses this dialog without deleting items"))
                 }
                 .padding(.top, 4)
             }
@@ -74,6 +81,7 @@ struct ClearConfirmationOverlay: View {
             .liquidGlassEffect(.regular, in: RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 28)
+            .accessibilityAddTraits(.isModal)
         }
     }
 }

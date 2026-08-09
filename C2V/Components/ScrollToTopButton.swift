@@ -8,6 +8,7 @@ import SwiftUI
 struct ScrollToTopButton: View {
     let action: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isHovered: Bool = false
 
     var body: some View {
@@ -17,15 +18,21 @@ struct ScrollToTopButton: View {
                 .foregroundColor(isHovered ? .accentColor : .primary)
                 .frame(width: 32, height: 32)
                 .liquidGlassEffect(in: Circle())
-                .scaleEffect(isHovered ? 1.08 : 1.0)
+                .scaleEffect(isHovered && !reduceMotion ? 1.08 : 1.0)
         }
         .buttonStyle(.plain)
         .onHover { hover in
-            withAnimation(.easeInOut(duration: 0.15)) {
+            if reduceMotion {
                 isHovered = hover
+            } else {
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    isHovered = hover
+                }
             }
         }
         .help("Go to Top")
+        .accessibilityLabel(Text("Scroll to top"))
+        .accessibilityHint(Text("Scrolls clipboard list back to top"))
     }
 }
 

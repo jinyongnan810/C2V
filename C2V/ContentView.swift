@@ -9,6 +9,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openSettings) private var openSettings
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query private var items: [CopiedItem]
 
     @Environment(ClipboardMonitor.self) private var monitor: ClipboardMonitor
@@ -147,6 +148,7 @@ struct ContentView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 18, height: 18)
+                    .accessibilityHidden(true)
                 Text("C2V")
                     .font(.headline)
                     .fontWeight(.bold)
@@ -166,6 +168,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .help("Clear History")
+                .accessibilityLabel(Text("Clear History"))
+                .accessibilityHint(Text("Opens confirmation dialog to clear copied items"))
 
                 Button {
                     openSettingsWindow()
@@ -178,6 +182,8 @@ struct ContentView: View {
                 }
                 .buttonStyle(.plain)
                 .help("Settings")
+                .accessibilityLabel(Text("Settings"))
+                .accessibilityHint(Text("Opens application settings window"))
             }
         }
         .padding(.horizontal, 14)
@@ -191,9 +197,11 @@ struct ContentView: View {
             HStack(spacing: 6) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.primary.opacity(0.7))
+                    .accessibilityHidden(true)
                 TextField("Search copied text...", text: $searchText)
                     .textFieldStyle(.plain)
                     .font(.subheadline)
+                    .accessibilityLabel(Text("Search copied text"))
 
                 if !searchText.isEmpty {
                     Button {
@@ -203,6 +211,7 @@ struct ContentView: View {
                             .foregroundColor(.primary.opacity(0.7))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Clear search text"))
                 }
             }
             .padding(.horizontal, 8)
@@ -210,8 +219,12 @@ struct ContentView: View {
             .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 8))
 
             Button {
-                withAnimation {
+                if reduceMotion {
                     filterPinnedOnly.toggle()
+                } else {
+                    withAnimation {
+                        filterPinnedOnly.toggle()
+                    }
                 }
             } label: {
                 Image(systemName: filterPinnedOnly ? "pin.fill" : "pin")
@@ -222,6 +235,8 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .help(filterPinnedOnly ? "Show All Items" : "Filter Pinned Items")
+            .accessibilityLabel(Text(filterPinnedOnly ? "Show All Items" : "Filter Pinned Items"))
+            .accessibilityHint(Text(filterPinnedOnly ? "Shows unpinned and pinned items" : "Filters list to display pinned items only"))
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -311,6 +326,7 @@ struct ContentView: View {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
+                    .accessibilityHidden(true)
                 Text("Copied to clipboard!")
                     .font(.subheadline)
                     .fontWeight(.medium)
@@ -321,6 +337,8 @@ struct ContentView: View {
             .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
             .padding(.bottom, 20)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("Copied to clipboard"))
     }
 
     @ContentBuilder
@@ -332,16 +350,19 @@ struct ContentView: View {
                 if pinnedCount > 0 {
                     Text("•")
                         .foregroundColor(.secondary)
+                        .accessibilityHidden(true)
                     HStack(spacing: 3) {
                         Image(systemName: "pin.fill")
                             .font(.caption2)
                             .foregroundColor(.orange)
+                            .accessibilityHidden(true)
                         Text("\(pinnedCount) pinned")
                     }
                 }
             }
             .font(.caption)
             .foregroundColor(.secondary)
+            .accessibilityElement(children: .combine)
 
             Spacer()
 
@@ -351,6 +372,8 @@ struct ContentView: View {
             .buttonStyle(.plain)
             .font(.caption)
             .foregroundColor(.primary)
+            .accessibilityLabel(Text("Quit C2V"))
+            .accessibilityHint(Text("Terminates the application"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)

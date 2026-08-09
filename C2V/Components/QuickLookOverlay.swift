@@ -35,6 +35,7 @@ struct QuickLookOverlay: View {
                     HStack(spacing: 6) {
                         Image(systemName: "eye.fill")
                             .foregroundColor(.accentColor)
+                            .accessibilityHidden(true)
                         Text("Quick Look")
                             .font(.headline)
                             .fontWeight(.bold)
@@ -53,6 +54,7 @@ struct QuickLookOverlay: View {
                     }
                     .buttonStyle(.plain)
                     .help("Close")
+                    .accessibilityLabel(Text("Close Quick Look"))
                 }
 
                 // Item Metadata Stats Bar
@@ -67,6 +69,8 @@ struct QuickLookOverlay: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 6))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text("\(item.text.count) characters, \(wordCount) words, \(lineCount) lines"))
 
                 // Scrollable Full Text Display
                 ScrollView {
@@ -77,6 +81,7 @@ struct QuickLookOverlay: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(10)
                 }
+                .accessibilityLabel(Text("Full text"))
 
                 // Footer Actions
                 HStack(spacing: 10) {
@@ -93,6 +98,8 @@ struct QuickLookOverlay: View {
                         .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: true, tint: isQuickLookCopied ? .green : .accentColor)
+                    .accessibilityLabel(Text(isQuickLookCopied ? "Copied to clipboard" : "Copy text"))
+                    .accessibilityHint(Text("Copies text to clipboard"))
 
                     Button {
                         onTogglePin()
@@ -106,6 +113,8 @@ struct QuickLookOverlay: View {
                         .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: false, tint: item.isPinned ? .orange : .primary)
+                    .accessibilityLabel(Text(item.isPinned ? "Unpin item" : "Pin item"))
+                    .accessibilityHint(Text(item.isPinned ? "Unpins item from top" : "Pins item to top"))
 
                     Button(role: .destructive) {
                         onDelete()
@@ -119,6 +128,8 @@ struct QuickLookOverlay: View {
                         .padding(.vertical, 4)
                     }
                     .liquidGlassButtonStyle(isProminent: false, tint: .red)
+                    .accessibilityLabel(Text("Delete item"))
+                    .accessibilityHint(Text("Deletes item from history"))
                 }
             }
             .padding(16)
@@ -126,6 +137,7 @@ struct QuickLookOverlay: View {
             .liquidGlassEffect(.regular, in: RoundedRectangle(cornerRadius: 14))
             .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 20)
+            .accessibilityAddTraits(.isModal)
         }
     }
 }

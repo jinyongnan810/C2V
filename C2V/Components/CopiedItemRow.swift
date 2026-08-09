@@ -12,6 +12,7 @@ struct CopiedItemRow: View {
     let onDelete: () -> Void
     let onQuickLook: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isHovered: Bool = false
 
     private var formattedDate: String {
@@ -58,6 +59,7 @@ struct CopiedItemRow: View {
                         }
                         .buttonStyle(.plain)
                         .help("Quick Look")
+                        .accessibilityLabel(Text("Quick Look"))
 
                         Button(action: onTogglePin) {
                             Image(systemName: item.isPinned ? "pin.slash.fill" : "pin")
@@ -68,6 +70,7 @@ struct CopiedItemRow: View {
                         }
                         .buttonStyle(.plain)
                         .help(item.isPinned ? "Unpin" : "Pin to Top")
+                        .accessibilityLabel(Text(item.isPinned ? "Unpin item" : "Pin item to top"))
 
                         Button(action: onDelete) {
                             Image(systemName: "trash")
@@ -78,6 +81,7 @@ struct CopiedItemRow: View {
                         }
                         .buttonStyle(.plain)
                         .help("Delete")
+                        .accessibilityLabel(Text("Delete item"))
                     }
                     .opacity(isHovered ? 1 : 0)
                     .allowsHitTesting(isHovered)
@@ -94,9 +98,25 @@ struct CopiedItemRow: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("\(item.text), \(formattedDate), \(item.text.count) characters\(item.isPinned ? ", pinned" : "")"))
+        .accessibilityHint(Text("Double tap to copy text snippet to clipboard"))
+        .accessibilityAction(named: Text("Quick Look")) {
+            onQuickLook()
+        }
+        .accessibilityAction(named: Text(item.isPinned ? "Unpin item" : "Pin item to top")) {
+            onTogglePin()
+        }
+        .accessibilityAction(named: Text("Delete item")) {
+            onDelete()
+        }
         .onHover { hover in
-            withAnimation(.easeInOut(duration: 0.15)) {
+            if reduceMotion {
                 isHovered = hover
+            } else {
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    isHovered = hover
+                }
             }
         }
     }

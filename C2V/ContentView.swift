@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var filterPinnedOnly: Bool = false
     @State private var copiedToastItemText: String? = nil
     @State private var showClearConfirmation: Bool = false
+    @State private var isScrolledDown: Bool = false
 
     var filteredItems: [CopiedItem] {
         items.filter { item in
@@ -175,23 +176,53 @@ struct ContentView: View {
     // MARK: - Item List
 
     private var itemList: some View {
-        ScrollViewReader { _ in
-            List {
-                ForEach(filteredItems) { item in
-                    CopiedItemRow(item: item) {
-                        copyItem(item)
-                    } onTogglePin: {
-                        togglePin(item)
-                    } onDelete: {
-                        deleteItem(item)
+        ScrollViewReader { proxy in
+            ZStack(alignment: .bottomTrailing) {
+                List {
+                    Color.clear
+                        .frame(height: 0.5)
+                        .id("scrollTopTarget")
+                        .listRowInsets(EdgeInsets())
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isScrolledDown = false
+                            }
+                        }
+                        .onDisappear {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                isScrolledDown = true
+                            }
+                        }
+
+                    ForEach(filteredItems) { item in
+                        CopiedItemRow(item: item) {
+                            copyItem(item)
+                        } onTogglePin: {
+                            togglePin(item)
+                        } onDelete: {
+                            deleteItem(item)
+                        }
+                        .id(item.id)
+                        .listRowInsets(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
-                    .id(item.id)
-                    .listRowInsets(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                }
+                .listStyle(.plain)
+
+                if isScrolledDown {
+                    ScrollToTopButton {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            proxy.scrollTo("scrollTopTarget", anchor: .top)
+                        }
+                    }
+                    .padding(.trailing, 14)
+                    .padding(.bottom, 14)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
-            .listStyle(.plain)
         }
     }
 
@@ -536,6 +567,38 @@ struct FadedItemText: View {
                 }
                 .frame(height: Self.maxHeight, alignment: .top)
             }
+    }
+}
+
+// MARK: - Scroll To Top Button
+
+struct ScrollToTopButton: View {
+    let action: () -> Void
+
+    @State private var isHovered: Bool = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "arrow.up")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(isHovered ? .accentColor : .primary)
+                .frame(width: 32, height: 32)
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
+                .shadow(color: Color.black.opacity(isHovered ? 0.3 : 0.18), radius: isHovered ? 6 : 4, x: 0, y: 2)
+                .overlay(
+                    Circle()
+                        .stroke(isHovered ? Color.accentColor.opacity(0.5) : Color.primary.opacity(0.15), lineWidth: 1)
+                )
+                .scaleEffect(isHovered ? 1.08 : 1.0)
+        }
+        .buttonStyle(.plain)
+        .onHover { hover in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isHovered = hover
+            }
+        }
+        .help("Go to Top")
     }
 }
 

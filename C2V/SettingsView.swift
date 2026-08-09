@@ -32,7 +32,7 @@ struct SettingsView: View {
 
             Section {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Stores up to 100 text snippets locally on your Mac. Files and images are excluded.")
+                    Text("Stores up to 100 unpinned text snippets locally on your Mac. Files and images are excluded.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

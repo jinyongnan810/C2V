@@ -110,15 +110,13 @@ final class ClipboardMonitor {
 
     private func trimOldItemsIfNeeded(modelContext: ModelContext, maxLimit: Int = 100) {
         let fetchDescriptor = FetchDescriptor<CopiedItem>(
+            predicate: #Predicate { !$0.isPinned },
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
         do {
-            let allItems = try modelContext.fetch(fetchDescriptor)
-            if allItems.count > maxLimit {
-                let unpinnedItems = allItems.filter { !$0.isPinned }
-                let itemsToDeleteCount = allItems.count - maxLimit
-
-                // Delete oldest unpinned items
+            let unpinnedItems = try modelContext.fetch(fetchDescriptor)
+            if unpinnedItems.count > maxLimit {
+                let itemsToDeleteCount = unpinnedItems.count - maxLimit
                 let itemsToDelete = unpinnedItems.suffix(itemsToDeleteCount)
                 for item in itemsToDelete {
                     modelContext.delete(item)

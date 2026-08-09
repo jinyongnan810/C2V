@@ -34,6 +34,10 @@ struct ContentView: View {
         }
     }
 
+    private var pinnedCount: Int {
+        items.filter(\.isPinned).count
+    }
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -71,14 +75,58 @@ struct ContentView: View {
 
             // Confirmation Overlay for MenuBarExtra
             if showClearConfirmation {
-                clearConfirmationOverlay
-                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                ClearConfirmationOverlay(
+                    onClearUnpinned: {
+                        withAnimation {
+                            clearUnpinnedItems()
+                            showClearConfirmation = false
+                        }
+                    },
+                    onClearAll: {
+                        withAnimation {
+                            clearAllItems()
+                            showClearConfirmation = false
+                        }
+                    },
+                    onCancel: {
+                        withAnimation(.easeInOut(duration: 0.15)) {
+                            showClearConfirmation = false
+                        }
+                    }
+                )
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
 
             // Quick Look Inspector Overlay
             if let item = selectedQuickLookItem {
-                quickLookOverlay(item: item)
-                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                QuickLookOverlay(
+                    item: item,
+                    isQuickLookCopied: isQuickLookCopied,
+                    onClose: {
+                        withAnimation(.easeInOut(duration: 0.15)) {
+                            selectedQuickLookItem = nil
+                            isQuickLookCopied = false
+                        }
+                    },
+                    onCopy: {
+                        copyItem(item)
+                        withAnimation(.easeInOut(duration: 0.15)) {
+                            isQuickLookCopied = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            withAnimation(.easeInOut(duration: 0.15)) {
+                                isQuickLookCopied = false
+                            }
+                        }
+                    },
+                    onTogglePin: {
+                        togglePin(item)
+                    },
+                    onDelete: {
+                        deleteItem(item)
+                    }
+                )
+                .transition(.opacity.combined(with: .scale(scale: 0.95)))
             }
         }
         .frame(width: 360, height: 480)
@@ -88,8 +136,9 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Header
+    // MARK: - Subviews
 
+    @ContentBuilder
     private var headerView: some View {
         HStack {
             HStack(spacing: 6) {
@@ -132,8 +181,7 @@ struct ContentView: View {
         .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
     }
 
-    // MARK: - Search & Filter
-
+    @ContentBuilder
     private var searchAndFilterBar: some View {
         HStack(spacing: 8) {
             HStack(spacing: 6) {
@@ -181,8 +229,7 @@ struct ContentView: View {
         .padding(.vertical, 8)
     }
 
-    // MARK: - Item List
-
+    @ContentBuilder
     private var itemList: some View {
         ScrollViewReader { proxy in
             ZStack(alignment: .bottomTrailing) {
@@ -239,8 +286,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Empty State
-
+    @ContentBuilder
     private var emptyStateView: some View {
         VStack(spacing: 12) {
             Image(systemName: searchText.isEmpty ? "doc.on.clipboard" : "magnifyingglass")
@@ -260,8 +306,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    // MARK: - Toast Overlay
-
+    @ContentBuilder
     private func toastOverlay(text _: String) -> some View {
         VStack {
             Spacer()
@@ -281,12 +326,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Footer
-
-    private var pinnedCount: Int {
-        items.filter(\.isPinned).count
-    }
-
+    @ContentBuilder
     private var footerView: some View {
         HStack {
             HStack(spacing: 4) {
@@ -320,6 +360,8 @@ struct ContentView: View {
         .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
     }
 
+    // MARK: - Helper Methods
+
     private func openSettingsWindow() {
         NSApp.activate(ignoringOtherApps: true)
         if #available(macOS 14.0, *) {
@@ -328,97 +370,6 @@ struct ContentView: View {
             NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         }
     }
-
-    // MARK: - Clear Confirmation Overlay
-
-    private var clearConfirmationOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        showClearConfirmation = false
-                    }
-                }
-
-            VStack(spacing: 14) {
-                Image(systemName: "trash.circle.fill")
-                    .font(.system(size: 36))
-                    .foregroundColor(.red)
-
-                VStack(spacing: 4) {
-                    Text("Clear Clipboard History?")
-                        .font(.headline)
-                        .fontWeight(.bold)
-
-                    Text("This action cannot be undone. Choose whether to keep pinned items or clear everything.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 4)
-                }
-
-                VStack(spacing: 8) {
-                    Button(role: .destructive) {
-                        withAnimation {
-                            clearUnpinnedItems()
-                            showClearConfirmation = false
-                        }
-                    } label: {
-                        Text("Clear Unpinned Items")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-
-                    Button(role: .destructive) {
-                        withAnimation {
-                            clearAllItems()
-                            showClearConfirmation = false
-                        }
-                    } label: {
-                        Text("Clear Everything")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
-
-                    Button(role: .cancel) {
-                        withAnimation {
-                            showClearConfirmation = false
-                        }
-                    } label: {
-                        Text("Cancel")
-                            .font(.subheadline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundColor(.secondary)
-                }
-                .padding(.top, 4)
-            }
-            .padding(18)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color(NSColor.windowBackgroundColor))
-                    .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
-            .padding(.horizontal, 28)
-        }
-    }
-
-    // MARK: - Actions
 
     private func copyItem(_ item: CopiedItem) {
         monitor.copyToClipboard(item.text, modelContext: modelContext)
@@ -475,304 +426,6 @@ struct ContentView: View {
             }
             try? modelContext.save()
         }
-    }
-
-    // MARK: - Quick Look Overlay
-
-    private func quickLookOverlay(item: CopiedItem) -> some View {
-        let wordCount = item.text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
-        let lineCount = item.text.components(separatedBy: .newlines).count
-
-        return ZStack {
-            Color.black.opacity(0.4)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        selectedQuickLookItem = nil
-                        isQuickLookCopied = false
-                    }
-                }
-
-            VStack(spacing: 12) {
-                // Header
-                HStack {
-                    HStack(spacing: 6) {
-                        Image(systemName: "eye.fill")
-                            .foregroundColor(.accentColor)
-                        Text("Quick Look")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                    }
-
-                    Spacer()
-
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.15)) {
-                            selectedQuickLookItem = nil
-                            isQuickLookCopied = false
-                        }
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
-                    }
-                    .buttonStyle(.plain)
-                    .help("Close")
-                }
-
-                // Item Metadata Stats Bar
-                HStack(spacing: 12) {
-                    Label("\(item.text.count) chars", systemImage: "textformat")
-                    Label("\(wordCount) words", systemImage: "doc.text")
-                    Label("\(lineCount) lines", systemImage: "line.3.horizontal")
-                }
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(Color.secondary.opacity(0.1))
-                .cornerRadius(6)
-
-                // Scrollable Full Text Display
-                ScrollView {
-                    Text(item.text)
-                        .font(.system(.subheadline, design: .monospaced))
-                        .foregroundColor(.primary)
-                        .textSelection(.enabled)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(10)
-                }
-                .background(Color(NSColor.textBackgroundColor))
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-                )
-
-                // Footer Actions
-                HStack(spacing: 10) {
-                    Button {
-                        copyItem(item)
-                        withAnimation(.easeInOut(duration: 0.15)) {
-                            isQuickLookCopied = true
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            withAnimation(.easeInOut(duration: 0.15)) {
-                                isQuickLookCopied = false
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: isQuickLookCopied ? "checkmark" : "doc.on.doc")
-                            Text(isQuickLookCopied ? "Copied!" : "Copy Text")
-                        }
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(isQuickLookCopied ? .green : .accentColor)
-
-                    Button {
-                        togglePin(item)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: item.isPinned ? "pin.slash.fill" : "pin.fill")
-                            Text(item.isPinned ? "Unpin" : "Pin")
-                        }
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(item.isPinned ? .orange : .primary)
-
-                    Button(role: .destructive) {
-                        deleteItem(item)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "trash")
-                            Text("Delete")
-                        }
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
-                }
-            }
-            .padding(16)
-            .frame(maxWidth: 320, maxHeight: 420)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color(NSColor.windowBackgroundColor))
-                    .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
-            .padding(.horizontal, 20)
-        }
-    }
-}
-
-// MARK: - Row Subview
-
-struct CopiedItemRow: View {
-    let item: CopiedItem
-    let onCopy: () -> Void
-    let onTogglePin: () -> Void
-    let onDelete: () -> Void
-    let onQuickLook: () -> Void
-
-    @State private var isHovered: Bool = false
-
-    private var formattedDate: String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: item.createdAt, relativeTo: Date())
-    }
-
-    var body: some View {
-        Button(action: onCopy) {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .top) {
-                    FadedItemText(text: item.text)
-
-                    if item.isPinned {
-                        Image(systemName: "pin.fill")
-                            .font(.caption2)
-                            .foregroundColor(.orange)
-                    }
-                }
-
-                HStack {
-                    Text(formattedDate)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-
-                    Text("•")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-
-                    Text("\(item.text.count) chars")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-
-                    Spacer()
-
-                    HStack(spacing: 8) {
-                        Button(action: onQuickLook) {
-                            Image(systemName: "eye")
-                                .font(.caption)
-                                .foregroundColor(.accentColor)
-                        }
-                        .buttonStyle(.plain)
-                        .help("Quick Look")
-
-                        Button(action: onTogglePin) {
-                            Image(systemName: item.isPinned ? "pin.slash.fill" : "pin")
-                                .font(.caption)
-                                .foregroundColor(item.isPinned ? .orange : .secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .help(item.isPinned ? "Unpin" : "Pin to Top")
-
-                        Button(action: onDelete) {
-                            Image(systemName: "trash")
-                                .font(.caption)
-                                .foregroundColor(.red.opacity(0.8))
-                        }
-                        .buttonStyle(.plain)
-                        .help("Delete")
-                    }
-                    .opacity(isHovered ? 1 : 0)
-                    .allowsHitTesting(isHovered)
-                }
-            }
-            .padding(10)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(isHovered ? Color.secondary.opacity(0.12) : Color(NSColor.controlBackgroundColor).opacity(0.4))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(item.isPinned ? Color.orange.opacity(0.3) : Color.clear, lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-        .onHover { hover in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isHovered = hover
-            }
-        }
-    }
-}
-
-// MARK: - Faded 4-Line Text View
-
-struct FadedItemText: View {
-    let text: String
-
-    private static let maxHeight: CGFloat = 72
-    private static let solidHeight: CGFloat = 44
-
-    var body: some View {
-        Text(text)
-            .font(.body)
-            .multilineTextAlignment(.leading)
-            .foregroundColor(.primary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(maxHeight: Self.maxHeight, alignment: .topLeading)
-            .clipped()
-            .mask(alignment: .top) {
-                VStack(spacing: 0) {
-                    Color.black
-                        .frame(height: Self.solidHeight)
-                    LinearGradient(
-                        colors: [.black, .clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                }
-                .frame(height: Self.maxHeight, alignment: .top)
-            }
-    }
-}
-
-// MARK: - Scroll To Top Button
-
-struct ScrollToTopButton: View {
-    let action: () -> Void
-
-    @State private var isHovered: Bool = false
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: "arrow.up")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(isHovered ? .accentColor : .primary)
-                .frame(width: 32, height: 32)
-                .background(.ultraThinMaterial)
-                .clipShape(Circle())
-                .shadow(color: Color.black.opacity(isHovered ? 0.3 : 0.18), radius: isHovered ? 6 : 4, x: 0, y: 2)
-                .overlay(
-                    Circle()
-                        .stroke(isHovered ? Color.accentColor.opacity(0.5) : Color.primary.opacity(0.15), lineWidth: 1)
-                )
-                .scaleEffect(isHovered ? 1.08 : 1.0)
-        }
-        .buttonStyle(.plain)
-        .onHover { hover in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isHovered = hover
-            }
-        }
-        .help("Go to Top")
     }
 }
 

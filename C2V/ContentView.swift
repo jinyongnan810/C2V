@@ -444,12 +444,7 @@ struct CopiedItemRow: View {
         Button(action: onCopy) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
-                    Text(item.text)
-                        .font(.body)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    FadedItemText(text: item.text)
 
                     if item.isPinned {
                         Image(systemName: "pin.fill")
@@ -510,6 +505,37 @@ struct CopiedItemRow: View {
                 isHovered = hover
             }
         }
+    }
+}
+
+// MARK: - Faded 4-Line Text View
+
+struct FadedItemText: View {
+    let text: String
+
+    private static let maxHeight: CGFloat = 72
+    private static let solidHeight: CGFloat = 44
+
+    var body: some View {
+        Text(text)
+            .font(.body)
+            .multilineTextAlignment(.leading)
+            .foregroundColor(.primary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxHeight: Self.maxHeight, alignment: .topLeading)
+            .clipped()
+            .mask(alignment: .top) {
+                VStack(spacing: 0) {
+                    Color.black
+                        .frame(height: Self.solidHeight)
+                    LinearGradient(
+                        colors: [.black, .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .frame(height: Self.maxHeight, alignment: .top)
+            }
     }
 }
 

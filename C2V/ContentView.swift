@@ -139,7 +139,7 @@ struct ContentView: View {
 
     // MARK: - Subviews
 
-    @ContentBuilder
+    @ViewBuilder
     private var headerView: some View {
         HStack {
             HStack(spacing: 6) {
@@ -191,7 +191,7 @@ struct ContentView: View {
         .liquidGlassEffect(in: Rectangle())
     }
 
-    @ContentBuilder
+    @ViewBuilder
     private var searchAndFilterBar: some View {
         HStack(spacing: 8) {
             HStack(spacing: 6) {
@@ -242,7 +242,7 @@ struct ContentView: View {
         .padding(.vertical, 8)
     }
 
-    @ContentBuilder
+    @ViewBuilder
     private var itemList: some View {
         ScrollViewReader { proxy in
             ZStack(alignment: .bottomTrailing) {
@@ -299,7 +299,7 @@ struct ContentView: View {
         }
     }
 
-    @ContentBuilder
+    @ViewBuilder
     private var emptyStateView: some View {
         VStack(spacing: 12) {
             Image(systemName: searchText.isEmpty ? "doc.on.clipboard" : "magnifyingglass")
@@ -319,7 +319,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    @ContentBuilder
+    @ViewBuilder
     private func toastOverlay(text _: String) -> some View {
         VStack {
             Spacer()
@@ -341,7 +341,7 @@ struct ContentView: View {
         .accessibilityLabel(Text("Copied to clipboard"))
     }
 
-    @ContentBuilder
+    @ViewBuilder
     private var footerView: some View {
         HStack {
             HStack(spacing: 4) {

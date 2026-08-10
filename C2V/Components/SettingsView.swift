@@ -40,9 +40,28 @@ struct SettingsView: View {
                 Text("Clipboard Storage")
                     .font(.headline)
             }
+
+            Section {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("All clipboard history is stored strictly on your local device. C2V does not collect, track, or transmit any data.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Link(destination: URL(string: "https://github.com/jinyongnan810/C2V/blob/main/PRIVACY_POLICY.md")!) {
+                        HStack(spacing: 3) {
+                            Text("View Privacy Policy")
+                            Image(systemName: "arrow.up.right.square")
+                        }
+                        .font(.caption)
+                    }
+                }
+            } header: {
+                Text("Privacy & Security")
+                    .font(.headline)
+            }
         }
         .formStyle(.grouped)
-        .frame(width: 380, height: 220)
+        .frame(width: 380, height: 310)
         .onAppear {
             launchAtLogin.checkStatus()
         }

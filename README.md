@@ -33,6 +33,7 @@ C2V/
 ├── C2VUITests/                     # UI tests suite
 ├── Makefile                        # Linting helper (make lint)
 ├── AGENTS.md                       # Guidelines for AI coding agents
+├── PRIVACY_POLICY.md               # Privacy policy (local-only data statement)
 └── README.md                       # Project documentation
 ```
 

@@ -132,6 +132,16 @@
     "•" : {
 
     },
+    "All clipboard history is stored strictly on your local device. C2V does not collect, track, or transmit any data." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのクリップボード履歴はお使いのローカルデバイスにのみ保存されます。C2Vがデータを収集、追跡、または送信することはありません。"
+          }
+        }
+      }
+    },
     "Auto Start on Boot" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -554,6 +564,16 @@
         }
       }
     },
+    "Privacy & Security" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシーとセキュリティ"
+          }
+        }
+      }
+    },
     "Quick Look" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -719,6 +739,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最上部のピン留めを解除します"
+          }
+        }
+      }
+    },
+    "View Privacy Policy" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プライバシーポリシーを表示"
           }
         }
       }

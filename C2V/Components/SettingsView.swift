@@ -61,7 +61,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 380, height: 310)
+        .frame(width: 380, height: 350)
         .onAppear {
             launchAtLogin.checkStatus()
         }

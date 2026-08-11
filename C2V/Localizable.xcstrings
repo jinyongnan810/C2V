@@ -681,6 +681,7 @@
       }
     },
     "Terminates the application" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {

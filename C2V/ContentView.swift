@@ -21,6 +21,7 @@ struct ContentView: View {
     @State private var isScrolledDown: Bool = false
     @State private var selectedQuickLookItem: CopiedItem? = nil
     @State private var isQuickLookCopied: Bool = false
+    @FocusState private var isSearchFocused: Bool
 
     var filteredItems: [CopiedItem] {
         items.filter { item in
@@ -131,9 +132,16 @@ struct ContentView: View {
             }
         }
         .frame(width: 360, height: 480)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isSearchFocused = false
+        }
         .liquidGlassEffect(in: Rectangle())
         .onAppear {
             monitor.startMonitoring(modelContext: modelContext)
+            DispatchQueue.main.async {
+                isSearchFocused = false
+            }
         }
     }
 
@@ -194,8 +202,9 @@ struct ContentView: View {
                     .foregroundColor(.primary.opacity(0.7))
                     .accessibilityHidden(true)
                 TextField("Search copied text...", text: $searchText)
+                    .focused($isSearchFocused)
                     .textFieldStyle(.plain)
-                    .font(.subheadline)
+                    .font(.title3)
                     .accessibilityLabel(Text("Search copied text"))
 
                 if !searchText.isEmpty {
@@ -211,7 +220,9 @@ struct ContentView: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 8))
+            .background {
+                RoundedRectangle(cornerRadius: 12).stroke(.secondary)
+            }
 
             Button {
                 if reduceMotion {
@@ -358,21 +369,10 @@ struct ContentView: View {
             .font(.caption)
             .foregroundColor(.secondary)
             .accessibilityElement(children: .combine)
-
             Spacer()
-
-            Button("Quit C2V") {
-                NSApplication.shared.terminate(nil)
-            }
-            .buttonStyle(.plain)
-            .font(.caption)
-            .foregroundColor(.primary)
-            .accessibilityLabel(Text("Quit C2V"))
-            .accessibilityHint(Text("Terminates the application"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .liquidGlassEffect(in: Rectangle())
     }
 
     // MARK: - Helper Methods

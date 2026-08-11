@@ -13,7 +13,7 @@ This repository contains **C2V**, a lightweight, modern macOS menu bar applicati
 
 ## Project Architecture & Tech Stack
 
-- **Platform**: macOS 13.0+ (SwiftUI, Swift 6)
+- **Platform**: macOS 13.0+ (SwiftUI, Swift 5)
 - **Menu Bar Integration**: `MenuBarExtra` scene using `.window` style in `C2VApp.swift`.
 - **Agent Mode (`Info.plist`)**: Configured with `LSUIElement = true` so the app runs strictly as a status bar item without taking up space in the macOS Dock.
 - **Data Persistence**: `SwiftData` model (`CopiedItem`) storing `id`, `text`, `createdAt`, and `isPinned`.

@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+/// Inspector modal presenting full selectable snippet text, metadata statistics, and quick action controls.
 struct QuickLookOverlay: View {
     let item: CopiedItem
     let isQuickLookCopied: Bool
@@ -13,18 +14,22 @@ struct QuickLookOverlay: View {
     let onTogglePin: () -> Void
     let onDelete: () -> Void
 
+    /// Returns a formatted date and time string for the snippet creation timestamp.
     private var formattedDate: String {
         item.createdAt.formatted(date: .abbreviated, time: .shortened)
     }
 
+    /// Calculates total word count of the snippet text.
     private var wordCount: Int {
         item.text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
     }
 
+    /// Calculates total line count of the snippet text.
     private var lineCount: Int {
         item.text.components(separatedBy: .newlines).count
     }
 
+    /// Renders the inspector overlay layout with header, stats bar, monospaced text scroll view, and action buttons.
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)

@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+/// Interactive card row displaying copied text snippet preview, metadata, and hover action buttons.
 struct CopiedItemRow: View {
     let item: CopiedItem
     let onCopy: () -> Void
@@ -15,12 +16,14 @@ struct CopiedItemRow: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isHovered: Bool = false
 
+    /// Returns an abbreviated relative timestamp string for the snippet creation date.
     private var formattedDate: String {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
         return formatter.localizedString(for: item.createdAt, relativeTo: Date())
     }
 
+    /// Renders the card row layout with faded text preview, metadata labels, and hover action buttons.
     var body: some View {
         Button(action: onCopy) {
             VStack(alignment: .leading, spacing: 6) {

@@ -5,12 +5,14 @@
 
 import SwiftUI
 
+/// Floating action button allowing users to smoothly scroll back to the top of the history list.
 struct ScrollToTopButton: View {
     let action: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isHovered: Bool = false
 
+    /// Renders circular glassmorphic button with up arrow icon and hover animation effects.
     var body: some View {
         Button(action: action) {
             Image(systemName: "arrow.up")

@@ -5,9 +5,11 @@
 
 import SwiftUI
 
+/// Settings window view for configuring launch-at-login, reviewing storage rules, and accessing privacy policy links.
 struct SettingsView: View {
     @State private var launchAtLogin = LaunchAtLoginManager()
 
+    /// Renders grouped form layout with auto-start toggle, storage limit notice, and privacy policy link.
     var body: some View {
         Form {
             Section {

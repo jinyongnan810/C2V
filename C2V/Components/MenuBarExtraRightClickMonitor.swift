@@ -6,6 +6,7 @@
 import AppKit
 import SwiftUI
 
+/// Singleton manager monitoring mouse click events to display native right-click status bar context menus.
 final class MenuBarExtraRightClickMonitor: NSObject {
     static let shared = MenuBarExtraRightClickMonitor()
 
@@ -17,6 +18,7 @@ final class MenuBarExtraRightClickMonitor: NSObject {
         super.init()
     }
 
+    /// Registers a local NSEvent monitor for right-click and Ctrl+left-click events on the status bar icon.
     func startMonitoring() {
         guard eventMonitor == nil else { return }
 
@@ -41,6 +43,7 @@ final class MenuBarExtraRightClickMonitor: NSObject {
         }
     }
 
+    /// Removes active NSEvent monitor and stops status bar click listening.
     func stopMonitoring() {
         if let monitor = eventMonitor {
             NSEvent.removeMonitor(monitor)
@@ -52,11 +55,13 @@ final class MenuBarExtraRightClickMonitor: NSObject {
         stopMonitoring()
     }
 
+    /// Finds the status bar button inside the specified window's content view hierarchy.
     private func findStatusBarButton(in window: NSWindow) -> NSStatusBarButton? {
         guard let contentView = window.contentView else { return nil }
         return findStatusBarButton(in: contentView)
     }
 
+    /// Recursively traverses view hierarchy to locate the target NSStatusBarButton instance.
     private func findStatusBarButton(in view: NSView) -> NSStatusBarButton? {
         if let button = view as? NSStatusBarButton {
             return button
@@ -69,6 +74,7 @@ final class MenuBarExtraRightClickMonitor: NSObject {
         return nil
     }
 
+    /// Constructs and pops up native NSMenu containing Settings and Quit menu items.
     private func showContextMenu(for button: NSStatusBarButton, with event: NSEvent) {
         let menu = NSMenu()
 
@@ -97,10 +103,12 @@ final class MenuBarExtraRightClickMonitor: NSObject {
         button.isHighlighted = false
     }
 
+    /// Triggers registered open settings callback.
     @objc private func openSettings() {
         onOpenSettings?()
     }
 
+    /// Terminates the application cleanly.
     @objc private func quitApp() {
         NSApplication.shared.terminate(nil)
     }

@@ -8,6 +8,7 @@ import Foundation
 import Observation
 import SwiftData
 
+/// Real-time pasteboard polling service that detects new copied text snippets and saves them to SwiftData.
 @MainActor
 @Observable
 final class ClipboardMonitor {
@@ -18,10 +19,12 @@ final class ClipboardMonitor {
 
     var lastCopiedText: String?
 
+    /// Initializes the clipboard monitor with the current system pasteboard change count.
     init() {
         lastChangeCount = pasteboard.changeCount
     }
 
+    /// Starts periodic timer to poll macOS pasteboard changes every 0.5 seconds.
     func startMonitoring(modelContext: ModelContext) {
         stopMonitoring()
 
@@ -38,11 +41,13 @@ final class ClipboardMonitor {
         }
     }
 
+    /// Stops active pasteboard polling timer.
     func stopMonitoring() {
         timer?.invalidate()
         timer = nil
     }
 
+    /// Checks pasteboard for plain text changes, filters out files/images, prevents duplicate consecutive entries, and saves new snippets.
     private func checkPasteboard(modelContext: ModelContext) {
         let currentChangeCount = pasteboard.changeCount
         guard currentChangeCount != lastChangeCount else { return }
@@ -86,6 +91,7 @@ final class ClipboardMonitor {
         }
     }
 
+    /// Writes specified text to NSPasteboard, updates change count, and refreshes item creation timestamp to bring it to the top.
     func copyToClipboard(_ text: String, modelContext: ModelContext) {
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
@@ -108,6 +114,7 @@ final class ClipboardMonitor {
         }
     }
 
+    /// Deletes oldest unpinned snippets from persistent store when unpinned item count exceeds maximum limit.
     private func trimOldItemsIfNeeded(modelContext: ModelContext, maxLimit: Int = 100) {
         let fetchDescriptor = FetchDescriptor<CopiedItem>(
             predicate: #Predicate { !$0.isPinned },

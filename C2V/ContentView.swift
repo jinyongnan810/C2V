@@ -6,6 +6,7 @@
 import SwiftData
 import SwiftUI
 
+/// Main popover view for searching, managing, inspecting, and clearing copied text snippets.
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openSettings) private var openSettings
@@ -23,6 +24,7 @@ struct ContentView: View {
     @State private var isQuickLookCopied: Bool = false
     @FocusState private var isSearchFocused: Bool
 
+    /// Filters and sorts clipboard items based on active search keyword and pin status filter.
     var filteredItems: [CopiedItem] {
         items.filter { item in
             let matchesSearch = searchText.isEmpty || item.text.localizedCaseInsensitiveContains(searchText)
@@ -36,10 +38,12 @@ struct ContentView: View {
         }
     }
 
+    /// Total count of items currently pinned by the user.
     private var pinnedCount: Int {
         items.filter(\.isPinned).count
     }
 
+    /// Renders the main view hierarchy including header, search bar, list container, and modal overlays.
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -147,6 +151,7 @@ struct ContentView: View {
 
     // MARK: - Subviews
 
+    /// Header view containing app status icon, clear history trigger, and settings button.
     @ViewBuilder
     private var headerView: some View {
         HStack {
@@ -194,6 +199,7 @@ struct ContentView: View {
         .liquidGlassEffect(in: Rectangle())
     }
 
+    /// Search bar input field with clear button and pin filter toggle button.
     @ViewBuilder
     private var searchAndFilterBar: some View {
         HStack(spacing: 8) {
@@ -248,6 +254,7 @@ struct ContentView: View {
         .padding(.vertical, 8)
     }
 
+    /// Scrollable list displaying copied items with scroll-to-top detection.
     @ViewBuilder
     private var itemList: some View {
         ScrollViewReader { proxy in
@@ -305,6 +312,7 @@ struct ContentView: View {
         }
     }
 
+    /// Placeholder view displayed when no items match search query or clipboard history is empty.
     @ViewBuilder
     private var emptyStateView: some View {
         VStack(spacing: 12) {
@@ -325,6 +333,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    /// Toast notification banner displayed temporarily when a snippet is copied to clipboard.
     @ViewBuilder
     private func toastOverlay(text _: String) -> some View {
         VStack {
@@ -347,6 +356,7 @@ struct ContentView: View {
         .accessibilityLabel(Text("Copied to clipboard"))
     }
 
+    /// Footer bar displaying total items count and pinned items count.
     @ViewBuilder
     private var footerView: some View {
         HStack {
@@ -377,6 +387,7 @@ struct ContentView: View {
 
     // MARK: - Helper Methods
 
+    /// Activates application and presents the macOS Settings window.
     private func openSettingsWindow() {
         NSApp.activate(ignoringOtherApps: true)
         if #available(macOS 14.0, *) {
@@ -386,6 +397,7 @@ struct ContentView: View {
         }
     }
 
+    /// Re-copies selected snippet text to pasteboard and displays copy confirmation toast.
     private func copyItem(_ item: CopiedItem) {
         monitor.copyToClipboard(item.text, modelContext: modelContext)
         withAnimation {
@@ -400,6 +412,7 @@ struct ContentView: View {
         }
     }
 
+    /// Toggles pinned state of specified clipboard item in SwiftData context.
     private func togglePin(_ item: CopiedItem) {
         withAnimation {
             item.isPinned.toggle()
@@ -407,6 +420,7 @@ struct ContentView: View {
         }
     }
 
+    /// Deletes specified snippet from SwiftData model context.
     private func deleteItem(_ item: CopiedItem) {
         if selectedQuickLookItem?.id == item.id {
             selectedQuickLookItem = nil
@@ -418,6 +432,7 @@ struct ContentView: View {
         }
     }
 
+    /// Deletes all non-pinned clipboard items from SwiftData context.
     private func clearUnpinnedItems() {
         if let current = selectedQuickLookItem, !current.isPinned {
             selectedQuickLookItem = nil
@@ -432,6 +447,7 @@ struct ContentView: View {
         }
     }
 
+    /// Deletes all history items including pinned snippets from SwiftData context.
     private func clearAllItems() {
         selectedQuickLookItem = nil
         isQuickLookCopied = false

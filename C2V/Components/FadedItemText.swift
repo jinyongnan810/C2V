@@ -5,12 +5,14 @@
 
 import SwiftUI
 
+/// Text view component displaying multi-line snippet text truncated with a linear gradient fade-out mask.
 struct FadedItemText: View {
     let text: String
 
     private static let maxHeight: CGFloat = 72
     private static let solidHeight: CGFloat = 44
 
+    /// Renders multi-line text content capped at maximum height with a smooth bottom gradient mask.
     var body: some View {
         Text(text)
             .font(.body)

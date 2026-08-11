@@ -5,6 +5,7 @@
 
 import SwiftUI
 
+/// Defines visual variants for Liquid Glass background effects.
 enum LiquidGlassVariant {
     case clear
     case regular

@@ -5,11 +5,13 @@
 
 import SwiftUI
 
+/// Confirmation modal dialog providing actions to clear unpinned items, clear all history, or cancel.
 struct ClearConfirmationOverlay: View {
     let onClearUnpinned: () -> Void
     let onClearAll: () -> Void
     let onCancel: () -> Void
 
+    /// Renders dimmed background backdrop and centered confirmation action card.
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)

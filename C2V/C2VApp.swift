@@ -6,14 +6,17 @@
 import SwiftData
 import SwiftUI
 
+/// Main application entry point managing the status bar scene and SwiftData container.
 @main
 struct C2VApp: App {
     @State private var monitor = ClipboardMonitor()
 
+    /// Initializes the application and starts monitoring right-click status bar events.
     init() {
         MenuBarExtraRightClickMonitor.shared.startMonitoring()
     }
 
+    /// Persistent SwiftData model container storing clipboard history items.
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             CopiedItem.self,
@@ -27,6 +30,7 @@ struct C2VApp: App {
         }
     }()
 
+    /// The main scene hierarchy comprising the status bar extra popover and app settings window.
     var body: some Scene {
         MenuBarExtra {
             ContentView()
@@ -48,9 +52,11 @@ struct C2VApp: App {
     }
 }
 
+/// Bridge view connecting the status bar right-click menu callback to the SwiftUI settings environment.
 private struct OpenSettingsBridgeView: View {
     @Environment(\.openSettings) private var openSettings
 
+    /// Renders an invisible view that registers the open settings callback on appear.
     var body: some View {
         Color.clear
             .onAppear {

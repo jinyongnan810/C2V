@@ -8,7 +8,9 @@ import Foundation
 import SwiftData
 import Testing
 
+/// Unit test suite for verifying C2V data models and core business logic.
 struct C2VTests {
+    /// Tests the initialization and default property values of a CopiedItem instance.
     @Test func testCopiedItemInitialization() throws {
         let text = "Hello C2V Clipboard"
         let item = CopiedItem(text: text)
@@ -17,6 +19,7 @@ struct C2VTests {
         #expect(item.isPinned == false)
     }
 
+    /// Tests toggling the pinning state of a CopiedItem model.
     @Test func testItemPinningToggle() throws {
         let item = CopiedItem(text: "Test snippet")
         #expect(item.isPinned == false)

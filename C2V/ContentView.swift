@@ -142,17 +142,12 @@ struct ContentView: View {
     @ViewBuilder
     private var headerView: some View {
         HStack {
-            HStack(spacing: 6) {
-                Image("TrayIcon")
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 18, height: 18)
-                    .accessibilityHidden(true)
-                Text("C2V")
-                    .font(.headline)
-                    .fontWeight(.bold)
-            }
+            Image("TrayIcon")
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 24, height: 24)
+                .accessibilityHidden(true)
 
             Spacer()
 

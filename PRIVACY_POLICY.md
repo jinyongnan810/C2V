@@ -24,7 +24,7 @@
 ## 3. User Control & Data Retention
 
 - **Management & Deletion**: You retain 100% ownership and control over your clipboard history. You can pin, copy, or delete individual history items or clear your entire saved history within the App at any time.
-- **Data Removal**: Uninstalling C2V or deleting the local app database removes all stored snippets from your computer.
+- **Data Removal**: Clearing your history within the App permanently wipes all saved snippets. If you uninstall C2V, you can also delete the local database files located in your macOS user Library to completely remove all traces from your computer.
 
 ---
 

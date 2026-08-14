@@ -21,7 +21,25 @@ struct C2VApp: App {
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            print("Failed to initialize persistent ModelContainer: \(error). Reconstructing database...")
+            // Reconstruct store when migration fails or schema is incompatible
+            if let storeURL = modelConfiguration.url as URL? {
+                let fileManager = FileManager.default
+                try? fileManager.removeItem(at: storeURL)
+                let walURL = URL(fileURLWithPath: storeURL.path + "-wal")
+                let shmURL = URL(fileURLWithPath: storeURL.path + "-shm")
+                try? fileManager.removeItem(at: walURL)
+                try? fileManager.removeItem(at: shmURL)
+                let altWalURL = storeURL.deletingPathExtension().appendingPathExtension("store-wal")
+                let altShmURL = storeURL.deletingPathExtension().appendingPathExtension("store-shm")
+                try? fileManager.removeItem(at: altWalURL)
+                try? fileManager.removeItem(at: altShmURL)
+            }
+            do {
+                return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            } catch {
+                fatalError("Could not reconstruct ModelContainer: \(error)")
+            }
         }
     }()
 

@@ -60,7 +60,7 @@ struct CopiedItemRow: View {
                         .font(.caption2)
                         .foregroundColor(.secondary)
 
-                    Text("\(item.resolvedCharacterCount) chars")
+                    Text("\(item.characterCount) chars")
                         .font(.caption2)
                         .foregroundColor(.secondary)
 
@@ -116,7 +116,7 @@ struct CopiedItemRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("\(previewText), \(formattedDate), \(item.resolvedCharacterCount) characters\(item.isPinned ? ", pinned" : "")"))
+        .accessibilityLabel(Text("\(previewText), \(formattedDate), \(item.characterCount) characters\(item.isPinned ? ", pinned" : "")"))
         .accessibilityHint(Text("Double tap to copy text snippet to clipboard"))
         .accessibilityAction(named: Text("Quick Look")) {
             onQuickLook()

@@ -13,12 +13,7 @@ final class CopiedItem {
     var text: String
     var createdAt: Date
     var isPinned: Bool
-    var characterCount: Int?
-
-    /// Returns the character count, falling back to text.count for legacy migrated records.
-    var resolvedCharacterCount: Int {
-        characterCount ?? text.count
-    }
+    var characterCount: Int
 
     /// Initializes a new copied item instance with unique identifier, text content, creation timestamp, pin status, and character count.
     init(

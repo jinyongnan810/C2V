@@ -27,14 +27,11 @@ final class ClipboardMonitor {
 
     /// Starts periodic timers: polls pasteboard changes every 0.5s and cleans overflowed unpinned items every 1 hour.
     func startMonitoring(modelContext: ModelContext) {
-        stopMonitoring()
-
         self.modelContext = modelContext
+        guard timer == nil else { return }
+
         // Initial sync of lastChangeCount
         lastChangeCount = pasteboard.changeCount
-
-        // Run initial cleanup on startup
-        trimOldItemsIfNeeded(modelContext: modelContext)
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in

@@ -9,15 +9,10 @@ import SwiftUI
 /// Main application entry point managing the status bar scene and SwiftData container.
 @main
 struct C2VApp: App {
-    @State private var monitor = ClipboardMonitor()
-
-    /// Initializes the application and starts monitoring right-click status bar events.
-    init() {
-        MenuBarExtraRightClickMonitor.shared.startMonitoring()
-    }
+    @State private var monitor: ClipboardMonitor
 
     /// Persistent SwiftData model container storing clipboard history items.
-    var sharedModelContainer: ModelContainer = {
+    static let sharedModelContainer: ModelContainer = {
         let schema = Schema([
             CopiedItem.self,
         ])
@@ -30,12 +25,20 @@ struct C2VApp: App {
         }
     }()
 
+    /// Initializes the application and starts monitoring right-click status bar events and clipboard changes.
+    init() {
+        let clipMonitor = ClipboardMonitor()
+        _monitor = State(initialValue: clipMonitor)
+        clipMonitor.startMonitoring(modelContext: Self.sharedModelContainer.mainContext)
+        MenuBarExtraRightClickMonitor.shared.startMonitoring()
+    }
+
     /// The main scene hierarchy comprising the status bar extra popover and app settings window.
     var body: some Scene {
         MenuBarExtra {
             ContentView()
                 .environment(monitor)
-                .modelContainer(sharedModelContainer)
+                .modelContainer(Self.sharedModelContainer)
         } label: {
             Image("TrayIcon")
                 .renderingMode(.template)

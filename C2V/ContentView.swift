@@ -11,7 +11,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openSettings) private var openSettings
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Query private var items: [CopiedItem]
+    @Query(sort: \CopiedItem.createdAt, order: .reverse) private var items: [CopiedItem]
 
     @Environment(ClipboardMonitor.self) private var monitor: ClipboardMonitor
 
@@ -24,18 +24,32 @@ struct ContentView: View {
     @State private var isQuickLookCopied: Bool = false
     @FocusState private var isSearchFocused: Bool
 
-    /// Filters and sorts clipboard items based on active search keyword and pin status filter.
+    /// Filters clipboard items based on active search keyword and pin status filter, prioritizing pinned items.
     var filteredItems: [CopiedItem] {
-        items.filter { item in
-            let matchesSearch = searchText.isEmpty || item.text.localizedCaseInsensitiveContains(searchText)
-            let matchesPin = !filterPinnedOnly || item.isPinned
-            return matchesSearch && matchesPin
-        }.sorted { a, b -> Bool in
-            if a.isPinned != b.isPinned {
-                return a.isPinned && !b.isPinned
+        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let candidateItems: [CopiedItem]
+        if trimmedSearch.isEmpty {
+            if filterPinnedOnly {
+                return items.filter(\.isPinned)
+            } else {
+                candidateItems = items
             }
-            return a.createdAt > b.createdAt
+        } else {
+            candidateItems = items.filter { item in
+                let matchesSearch = item.text.localizedCaseInsensitiveContains(trimmedSearch)
+                let matchesPin = !filterPinnedOnly || item.isPinned
+                return matchesSearch && matchesPin
+            }
         }
+
+        if filterPinnedOnly || !candidateItems.contains(where: \.isPinned) {
+            return candidateItems
+        }
+
+        let pinned = candidateItems.filter(\.isPinned)
+        let unpinned = candidateItems.filter { !$0.isPinned }
+        return pinned + unpinned
     }
 
     /// Total count of items currently pinned by the user.

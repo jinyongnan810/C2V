@@ -16,11 +16,20 @@ struct CopiedItemRow: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isHovered: Bool = false
 
-    /// Returns an abbreviated relative timestamp string for the snippet creation date.
-    private var formattedDate: String {
+    private static let relativeDateTimeFormatter: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .abbreviated
-        return formatter.localizedString(for: item.createdAt, relativeTo: Date())
+        return formatter
+    }()
+
+    /// Returns an abbreviated relative timestamp string for the snippet creation date.
+    private var formattedDate: String {
+        Self.relativeDateTimeFormatter.localizedString(for: item.createdAt, relativeTo: Date())
+    }
+
+    /// A truncated preview of the snippet text capped at 200 characters for performant rendering and accessibility.
+    private var previewText: String {
+        String(item.text.prefix(200))
     }
 
     /// Renders the card row layout with faded text preview, metadata labels, and hover action buttons.
@@ -28,7 +37,7 @@ struct CopiedItemRow: View {
         Button(action: onCopy) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
-                    FadedItemText(text: item.text)
+                    FadedItemText(text: previewText)
 
                     if item.isPinned {
                         Image(systemName: "pin.fill")
@@ -46,7 +55,7 @@ struct CopiedItemRow: View {
                         .font(.caption2)
                         .foregroundColor(.secondary)
 
-                    Text("\(item.text.count) chars")
+                    Text("\(item.resolvedCharacterCount) chars")
                         .font(.caption2)
                         .foregroundColor(.secondary)
 
@@ -102,7 +111,7 @@ struct CopiedItemRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("\(item.text), \(formattedDate), \(item.text.count) characters\(item.isPinned ? ", pinned" : "")"))
+        .accessibilityLabel(Text("\(previewText), \(formattedDate), \(item.resolvedCharacterCount) characters\(item.isPinned ? ", pinned" : "")"))
         .accessibilityHint(Text("Double tap to copy text snippet to clipboard"))
         .accessibilityAction(named: Text("Quick Look")) {
             onQuickLook()

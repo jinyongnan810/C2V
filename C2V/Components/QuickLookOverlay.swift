@@ -71,7 +71,7 @@ struct QuickLookOverlay: View {
                     Label(formattedDate, systemImage: "clock")
 
                     HStack(spacing: 16) {
-                        Label("\(item.text.count) chars", systemImage: "textformat")
+                        Label("\(item.resolvedCharacterCount) chars", systemImage: "textformat")
                         Label("\(wordCount) words", systemImage: "doc.text")
                         Label("\(lineCount) lines", systemImage: "line.3.horizontal")
                     }
@@ -83,7 +83,7 @@ struct QuickLookOverlay: View {
                 .padding(.vertical, 6)
                 .liquidGlassEffect(in: RoundedRectangle(cornerRadius: 6))
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel(Text("\(formattedDate), \(item.text.count) characters, \(wordCount) words, \(lineCount) lines"))
+                .accessibilityLabel(Text("\(formattedDate), \(item.resolvedCharacterCount) characters, \(wordCount) words, \(lineCount) lines"))
 
                 // Scrollable Full Text Display
                 ScrollView {

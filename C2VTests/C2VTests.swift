@@ -17,6 +17,16 @@ struct C2VTests {
 
         #expect(item.text == text)
         #expect(item.isPinned == false)
+        #expect(item.characterCount == text.count)
+        #expect(item.resolvedCharacterCount == text.count)
+    }
+
+    /// Tests fallback behavior for legacy migrated items where characterCount is nil.
+    @Test func testLegacyItemFallback() throws {
+        let text = "Legacy snippet without characterCount"
+        let item = CopiedItem(text: text, characterCount: nil)
+        #expect(item.characterCount == text.count)
+        #expect(item.resolvedCharacterCount == text.count)
     }
 
     /// Tests toggling the pinning state of a CopiedItem model.

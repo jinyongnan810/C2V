@@ -370,7 +370,7 @@ struct ContentView: View {
         .accessibilityLabel(Text("Copied to clipboard"))
     }
 
-    /// Footer bar displaying total items count and pinned items count.
+    /// Footer bar displaying total items count, pinned items count, and application quit button.
     @ViewBuilder
     private var footerView: some View {
         HStack {
@@ -393,7 +393,18 @@ struct ContentView: View {
             .font(.caption)
             .foregroundColor(.secondary)
             .accessibilityElement(children: .combine)
+
             Spacer()
+
+            Button("Quit C2V") {
+                NSApplication.shared.terminate(nil)
+            }
+            .buttonStyle(.plain)
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .help("Quit C2V")
+            .accessibilityLabel(Text("Quit C2V"))
+            .accessibilityHint(Text("Terminates the application"))
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)

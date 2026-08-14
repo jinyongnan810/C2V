@@ -13,6 +13,7 @@ import SwiftData
 @Observable
 final class ClipboardMonitor {
     @ObservationIgnored private var timer: Timer?
+    @ObservationIgnored private var cleanupTimer: Timer?
     @ObservationIgnored private var lastChangeCount: Int
     @ObservationIgnored private let pasteboard = NSPasteboard.general
     @ObservationIgnored private var modelContext: ModelContext?
@@ -24,13 +25,16 @@ final class ClipboardMonitor {
         lastChangeCount = pasteboard.changeCount
     }
 
-    /// Starts periodic timer to poll macOS pasteboard changes every 0.5 seconds.
+    /// Starts periodic timers: polls pasteboard changes every 0.5s and cleans overflowed unpinned items every 1 hour.
     func startMonitoring(modelContext: ModelContext) {
         stopMonitoring()
 
         self.modelContext = modelContext
         // Initial sync of lastChangeCount
         lastChangeCount = pasteboard.changeCount
+
+        // Run initial cleanup on startup
+        trimOldItemsIfNeeded(modelContext: modelContext)
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
@@ -39,12 +43,22 @@ final class ClipboardMonitor {
                 }
             }
         }
+
+        cleanupTimer = Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                if let self, let context = self.modelContext {
+                    trimOldItemsIfNeeded(modelContext: context)
+                }
+            }
+        }
     }
 
-    /// Stops active pasteboard polling timer.
+    /// Stops active pasteboard polling timer and hourly cleanup timer.
     func stopMonitoring() {
         timer?.invalidate()
         timer = nil
+        cleanupTimer?.invalidate()
+        cleanupTimer = nil
     }
 
     /// Checks pasteboard for plain text changes, filters out files/images, prevents duplicate consecutive entries, and saves new snippets.
@@ -83,9 +97,6 @@ final class ClipboardMonitor {
             try modelContext.save()
 
             lastCopiedText = text
-
-            // Trim old unpinned items if over limit (e.g. 100)
-            trimOldItemsIfNeeded(modelContext: modelContext)
         } catch {
             print("Failed to fetch/save copied item: \(error)")
         }

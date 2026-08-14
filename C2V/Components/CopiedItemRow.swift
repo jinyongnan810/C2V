@@ -32,12 +32,17 @@ struct CopiedItemRow: View {
         String(item.text.prefix(200))
     }
 
-    /// Renders the card row layout with faded text preview, metadata labels, and hover action buttons.
+    /// Renders the card row layout with text preview, metadata labels, and hover action buttons.
     var body: some View {
         Button(action: onCopy) {
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
-                    FadedItemText(text: previewText)
+                    Text(previewText)
+                        .font(.body)
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
+                        .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     if item.isPinned {
                         Image(systemName: "pin.fill")

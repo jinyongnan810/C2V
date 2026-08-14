@@ -23,6 +23,7 @@ This repository contains **C2V**, a lightweight, modern macOS menu bar applicati
 ## Development & Xcode MCP Guidelines
 
 - **Xcode Tooling**: Always use Xcode MCP tools (`BuildProject`, `RunAllTests`, `AddInfoPlist`, `XcodeRM`, etc.) for building, testing, and project configuration.
+  - Do not use `xcodebuild` or other command-line tools for building or testing unless explicitly instructed.
 - **UI Design**: Ensure popover rows remain layout-stable when hovered (`.opacity(isHovered ? 1 : 0)` with `.allowsHitTesting(isHovered)`).
 
 ## Verification Steps

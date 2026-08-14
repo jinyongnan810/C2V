@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var copiedToastItemText: String? = nil
     @State private var showClearConfirmation: Bool = false
     @State private var isScrolledDown: Bool = false
+    @State private var isViewVisible: Bool = false
     @State private var selectedQuickLookItem: CopiedItem? = nil
     @State private var isQuickLookCopied: Bool = false
     @FocusState private var isSearchFocused: Bool
@@ -156,10 +157,22 @@ struct ContentView: View {
         }
         .liquidGlassEffect(in: Rectangle())
         .onAppear {
+            isViewVisible = true
+            isScrolledDown = false
             monitor.startMonitoring(modelContext: modelContext)
             DispatchQueue.main.async {
                 isSearchFocused = false
             }
+        }
+        .onDisappear {
+            isViewVisible = false
+            isScrolledDown = false
+        }
+        .onChange(of: searchText) { _, _ in
+            isScrolledDown = false
+        }
+        .onChange(of: filterPinnedOnly) { _, _ in
+            isScrolledDown = false
         }
     }
 
@@ -281,11 +294,13 @@ struct ContentView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .onAppear {
+                            guard isViewVisible else { return }
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 isScrolledDown = false
                             }
                         }
                         .onDisappear {
+                            guard isViewVisible else { return }
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 isScrolledDown = true
                             }

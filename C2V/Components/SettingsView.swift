@@ -49,7 +49,7 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Link(destination: URL(string: "https://github.com/jinyongnan810/C2V/blob/main/PRIVACY_POLICY.md")!) {
+                    Link(destination: privacyPolicyURL) {
                         HStack(spacing: 3) {
                             Text("View Privacy Policy")
                             Image(systemName: "arrow.up.right.square")
@@ -67,6 +67,13 @@ struct SettingsView: View {
         .onAppear {
             launchAtLogin.checkStatus()
         }
+    }
+
+    /// Resolves localized privacy policy document URL based on current system language preference.
+    private var privacyPolicyURL: URL {
+        let isJapanese = Locale.preferredLanguages.first?.hasPrefix("ja") == true || Locale.current.language.languageCode?.identifier == "ja"
+        let fileName = isJapanese ? "PRIVACY_POLICY_JA.md" : "PRIVACY_POLICY.md"
+        return URL(string: "https://github.com/jinyongnan810/C2V/blob/main/\(fileName)")!
     }
 }
 

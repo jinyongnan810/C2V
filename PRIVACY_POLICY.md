@@ -1,5 +1,7 @@
 # Privacy Policy for C2V
 
+[English](PRIVACY_POLICY.md) | [日本語](PRIVACY_POLICY_JA.md)
+
 **Effective Date:** August 10, 2026
 
 **C2V** ("the App", "we", "us", or "our") is a lightweight, modern macOS menu bar application designed to help you manage your copied text snippets efficiently. Your privacy is paramount, and this Privacy Policy outlines how the App handles user data.

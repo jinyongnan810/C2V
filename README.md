@@ -52,7 +52,8 @@ C2V/
 ├── C2VUITests/                                 # UI test suite
 ├── Makefile                                    # SwiftFormat linting script (make lint)
 ├── AGENTS.md                                   # AI coding agent guidelines & rules
-├── PRIVACY_POLICY.md                           # Comprehensive privacy policy document
+├── PRIVACY_POLICY.md                           # Comprehensive privacy policy document (English)
+├── PRIVACY_POLICY_JA.md                        # Comprehensive privacy policy document (Japanese)
 └── README.md                                   # Project documentation
 ```
 
@@ -100,7 +101,7 @@ make lint
 
 ## 🛡️ Privacy Policy
 
-C2V is committed to user privacy. All copied text history remains 100% local on your Mac. For complete details, see our [Privacy Policy](PRIVACY_POLICY.md).
+C2V is committed to user privacy. All copied text history remains 100% local on your Mac. For complete details, see our [Privacy Policy (English)](PRIVACY_POLICY.md) or [プライバシーポリシー (日本語)](PRIVACY_POLICY_JA.md).
 
 ---
 

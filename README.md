@@ -2,6 +2,8 @@
 
 **C2V** is a lightweight, modern, and privacy-focused macOS status bar application that automatically intercepts, organizes, and manages your copied text snippets. Built with SwiftUI, SwiftData, ServiceManagement, and Apple's Liquid Glass visual language.
 
+[![Download on the Mac App Store](https://img.shields.io/badge/Download_on_the-Mac_App_Store-black?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/jp/app/c2v-%E3%82%B3%E3%83%94%E3%83%9A%E8%A8%98%E9%8C%B2%E3%82%A2%E3%83%97%E3%83%AA/id6798622919?mt=12)
+
 ![macOS](https://img.shields.io/badge/macOS-13.0%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.0-orange)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-SwiftData-purple)
@@ -68,6 +70,16 @@ C2V/
 - **System Integration**: `ServiceManagement` (`SMAppService.mainApp`) for Launch at Login
 - **Design System**: Liquid Glass aesthetics with `.glass` / `.glassProminent` button styles and material fallbacks
 - **Localization**: String Catalog (`.xcstrings`)
+
+---
+
+## 📥 Download
+
+Download C2V directly from the **Mac App Store**:
+
+[![Download on the Mac App Store](https://img.shields.io/badge/Download_on_the-Mac_App_Store-black?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/jp/app/c2v-%E3%82%B3%E3%83%94%E3%83%9A%E8%A8%98%E9%8C%B2%E3%82%A2%E3%83%97%E3%83%AA/id6798622919?mt=12)
+
+Or visit the App Store page: [C2V - コピペ記録アプリ on the Mac App Store](https://apps.apple.com/jp/app/c2v-%E3%82%B3%E3%83%94%E3%83%9A%E8%A8%98%E9%8C%B2%E3%82%A2%E3%83%97%E3%83%AA/id6798622919?mt=12)
 
 ---
 

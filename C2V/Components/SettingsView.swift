@@ -3,13 +3,17 @@
 //  C2V
 //
 
+import SwiftData
 import SwiftUI
 
-/// Settings window view for configuring launch-at-login, reviewing storage rules, and accessing privacy policy links.
+/// Settings window view for configuring launch-at-login, history capacity limits, and accessing privacy policy links.
 struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ClipboardMonitor.self) private var monitor: ClipboardMonitor
     @State private var launchAtLogin = LaunchAtLoginManager()
+    @AppStorage(HistoryLimitManager.historyLimitKey) private var historyLimit: Int = HistoryLimitManager.defaultLimit
 
-    /// Renders grouped form layout with auto-start toggle, storage limit notice, and privacy policy link.
+    /// Renders grouped form layout with auto-start toggle, storage limit slider, and privacy policy link.
     var body: some View {
         Form {
             Section {
@@ -33,8 +37,40 @@ struct SettingsView: View {
             }
 
             Section {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Stores up to 100 unpinned text snippets locally on your Mac. Files and images are excluded.")
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("History Limit")
+                            .font(.body)
+                            .fontWeight(.medium)
+                        Spacer()
+                        Text("\(historyLimit) items")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Slider(
+                        value: Binding(
+                            get: { Double(historyLimit) },
+                            set: { newValue in
+                                historyLimit = Int(newValue.rounded())
+                            }
+                        ),
+                        in: Double(HistoryLimitManager.minLimit) ... Double(HistoryLimitManager.maxLimit),
+                        step: 10
+                    ) {
+                        Text("History Limit")
+                    } minimumValueLabel: {
+                        Text("\(HistoryLimitManager.minLimit)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    } maximumValueLabel: {
+                        Text("\(HistoryLimitManager.maxLimit)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .labelsHidden()
+
+                    Text("Stores up to \(historyLimit) unpinned text snippets locally on your Mac. Files and images are excluded.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -63,9 +99,12 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 380, height: 350)
+        .frame(width: 380, height: 410)
         .onAppear {
             launchAtLogin.checkStatus()
+        }
+        .onDisappear {
+            monitor.trimOldItemsIfNeeded(modelContext: modelContext, maxLimit: historyLimit)
         }
     }
 
@@ -79,4 +118,6 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
+        .environment(ClipboardMonitor())
+        .modelContainer(for: CopiedItem.self, inMemory: true)
 }

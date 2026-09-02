@@ -33,6 +33,9 @@ final class ClipboardMonitor {
         // Initial sync of lastChangeCount
         lastChangeCount = pasteboard.changeCount
 
+        // Initial trim on startup
+        trimOldItemsIfNeeded(modelContext: modelContext)
+
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 if let self, let context = self.modelContext {
@@ -123,15 +126,16 @@ final class ClipboardMonitor {
     }
 
     /// Deletes oldest unpinned snippets from persistent store when unpinned item count exceeds maximum limit.
-    private func trimOldItemsIfNeeded(modelContext: ModelContext, maxLimit: Int = 100) {
+    func trimOldItemsIfNeeded(modelContext: ModelContext, maxLimit: Int? = nil) {
+        let limit = maxLimit ?? HistoryLimitManager.currentLimit
         let fetchDescriptor = FetchDescriptor<CopiedItem>(
             predicate: #Predicate { !$0.isPinned },
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
         do {
             let unpinnedItems = try modelContext.fetch(fetchDescriptor)
-            if unpinnedItems.count > maxLimit {
-                let itemsToDeleteCount = unpinnedItems.count - maxLimit
+            if unpinnedItems.count > limit {
+                let itemsToDeleteCount = unpinnedItems.count - limit
                 let itemsToDelete = unpinnedItems.suffix(itemsToDeleteCount)
                 for item in itemsToDelete {
                     modelContext.delete(item)

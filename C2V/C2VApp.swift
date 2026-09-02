@@ -17,6 +17,7 @@ struct C2VApp: App {
             CopiedItem.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        HistoryLimitManager.setupDefaultLimitIfNeeded()
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
@@ -69,6 +70,8 @@ struct C2VApp: App {
 
         Settings {
             SettingsView()
+                .environment(monitor)
+                .modelContainer(Self.sharedModelContainer)
         }
     }
 }

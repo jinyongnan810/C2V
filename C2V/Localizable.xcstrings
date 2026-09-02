@@ -33,6 +33,9 @@
         }
       }
     },
+    "%lld" : {
+
+    },
     "%lld characters, %lld words, %lld lines" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -459,6 +462,17 @@
         }
       }
     },
+    "History Limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴の保存上限"
+          }
+        }
+      }
+    },
     "Launch C2V automatically when macOS starts." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -665,6 +679,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留めされていない項目とピン留めされた項目の両方を表示します"
+          }
+        }
+      }
+    },
+    "Stores up to %lld unpinned text snippets locally on your Mac. Files and images are excluded." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stores up to %lld unpinned text snippets locally on your Mac. Files and images are excluded."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めされていないテキストスニペットをMac上に最大%lld件ローカル保存します。ファイルや画像は除外されます。"
           }
         }
       }

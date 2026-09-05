@@ -72,7 +72,7 @@ struct CopiedItemRow: View {
                                 .font(.caption)
                                 .foregroundColor(.accentColor)
                                 .frame(width: 24, height: 24)
-                                .liquidGlassEffect(in: Circle())
+                                .background(Circle().fill(Color.primary.opacity(0.08)))
                         }
                         .buttonStyle(.plain)
                         .help("Quick Look")
@@ -83,7 +83,7 @@ struct CopiedItemRow: View {
                                 .font(.caption)
                                 .foregroundColor(item.isPinned ? .orange : .primary)
                                 .frame(width: 24, height: 24)
-                                .liquidGlassEffect(in: Circle())
+                                .background(Circle().fill(Color.primary.opacity(0.08)))
                         }
                         .buttonStyle(.plain)
                         .help(item.isPinned ? "Unpin" : "Pin to Top")
@@ -94,7 +94,7 @@ struct CopiedItemRow: View {
                                 .font(.caption)
                                 .foregroundColor(.red)
                                 .frame(width: 24, height: 24)
-                                .liquidGlassEffect(in: Circle())
+                                .background(Circle().fill(Color.primary.opacity(0.08)))
                         }
                         .buttonStyle(.plain)
                         .help("Delete")

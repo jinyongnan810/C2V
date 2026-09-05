@@ -55,11 +55,16 @@ struct ContentView: View {
 
     /// Total count of items currently pinned by the user.
     private var pinnedCount: Int {
-        items.filter(\.isPinned).count
+        items.reduce(into: 0) { count, item in
+            if item.isPinned { count += 1 }
+        }
     }
 
     /// Renders the main view hierarchy including header, search bar, list container, and modal overlays.
     var body: some View {
+        let currentFilteredItems = filteredItems
+        let currentPinnedCount = pinnedCount
+
         ZStack {
             VStack(spacing: 0) {
                 // Header
@@ -74,10 +79,10 @@ struct ContentView: View {
 
                 // Clipboard List
                 ZStack {
-                    if filteredItems.isEmpty {
+                    if currentFilteredItems.isEmpty {
                         emptyStateView
                     } else {
-                        itemList
+                        itemList(items: currentFilteredItems)
                     }
 
                     // Toast notification when item is copied
@@ -91,7 +96,7 @@ struct ContentView: View {
                 Divider()
 
                 // Footer
-                footerView
+                footerView(itemCount: currentFilteredItems.count, pinnedCount: currentPinnedCount)
             }
 
             // Confirmation Overlay for MenuBarExtra
@@ -282,7 +287,7 @@ struct ContentView: View {
 
     /// Scrollable list displaying copied items with scroll-to-top detection.
     @ViewBuilder
-    private var itemList: some View {
+    private func itemList(items: [CopiedItem]) -> some View {
         ScrollViewReader { proxy in
             ZStack(alignment: .bottomTrailing) {
                 List {
@@ -305,7 +310,7 @@ struct ContentView: View {
                             }
                         }
 
-                    ForEach(filteredItems) { item in
+                    ForEach(items) { item in
                         CopiedItemRow(item: item) {
                             copyItem(item)
                         } onTogglePin: {
@@ -387,10 +392,10 @@ struct ContentView: View {
 
     /// Footer bar displaying total items count, pinned items count, and application quit button.
     @ViewBuilder
-    private var footerView: some View {
+    private func footerView(itemCount: Int, pinnedCount: Int) -> some View {
         HStack {
             HStack(spacing: 4) {
-                Text("\(filteredItems.count) items")
+                Text("\(itemCount) items")
 
                 if pinnedCount > 0 {
                     Text("•")

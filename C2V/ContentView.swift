@@ -159,7 +159,6 @@ struct ContentView: View {
         .onAppear {
             isViewVisible = true
             isScrolledDown = false
-            monitor.startMonitoring(modelContext: modelContext)
             DispatchQueue.main.async {
                 isSearchFocused = false
             }

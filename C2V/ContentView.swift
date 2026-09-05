@@ -20,7 +20,6 @@ struct ContentView: View {
     @State private var copiedToastItemText: String? = nil
     @State private var showClearConfirmation: Bool = false
     @State private var isScrolledDown: Bool = false
-    @State private var isViewVisible: Bool = false
     @State private var selectedQuickLookItem: CopiedItem? = nil
     @State private var isQuickLookCopied: Bool = false
     @FocusState private var isSearchFocused: Bool
@@ -162,14 +161,12 @@ struct ContentView: View {
         }
         .liquidGlassEffect(in: Rectangle())
         .onAppear {
-            isViewVisible = true
             isScrolledDown = false
             DispatchQueue.main.async {
                 isSearchFocused = false
             }
         }
         .onDisappear {
-            isViewVisible = false
             isScrolledDown = false
         }
         .onChange(of: searchText) { _, _ in
@@ -297,18 +294,6 @@ struct ContentView: View {
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
-                        .onAppear {
-                            guard isViewVisible else { return }
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isScrolledDown = false
-                            }
-                        }
-                        .onDisappear {
-                            guard isViewVisible else { return }
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                isScrolledDown = true
-                            }
-                        }
 
                     ForEach(items) { item in
                         CopiedItemRow(item: item) {
@@ -331,6 +316,15 @@ struct ContentView: View {
                     }
                 }
                 .listStyle(.plain)
+                .onScrollGeometryChange(for: Bool.self) { geometry in
+                    geometry.contentOffset.y > 20
+                } action: { oldValue, newValue in
+                    if oldValue != newValue {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isScrolledDown = newValue
+                        }
+                    }
+                }
 
                 if isScrolledDown {
                     ScrollToTopButton {

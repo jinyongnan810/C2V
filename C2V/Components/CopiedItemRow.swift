@@ -138,3 +138,12 @@ struct CopiedItemRow: View {
         }
     }
 }
+
+extension CopiedItemRow: Equatable {
+    static func == (lhs: CopiedItemRow, rhs: CopiedItemRow) -> Bool {
+        lhs.item.id == rhs.item.id &&
+            lhs.item.createdAt == rhs.item.createdAt &&
+            lhs.item.isPinned == rhs.item.isPinned &&
+            lhs.item.characterCount == rhs.item.characterCount
+    }
+}

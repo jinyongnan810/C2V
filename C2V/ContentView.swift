@@ -318,6 +318,7 @@ struct ContentView: View {
                                 isQuickLookCopied = false
                             }
                         }
+                        .equatable()
                         .id(item.id)
                         .listRowInsets(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10))
                         .listRowSeparator(.hidden)

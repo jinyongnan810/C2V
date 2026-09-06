@@ -4,7 +4,7 @@
 
 [![Download on the Mac App Store](https://img.shields.io/badge/Download_on_the-Mac_App_Store-black?style=for-the-badge&logo=apple&logoColor=white)](https://apps.apple.com/jp/app/c2v-%E3%82%B3%E3%83%94%E3%83%9A%E8%A8%98%E9%8C%B2%E3%82%A2%E3%83%97%E3%83%AA/id6798622919?mt=12)
 
-![macOS](https://img.shields.io/badge/macOS-13.0%2B-blue)
+![macOS](https://img.shields.io/badge/macOS-15.6%2B-blue)
 ![Swift](https://img.shields.io/badge/Swift-5.0-orange)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-SwiftData-purple)
 ![Localization](https://img.shields.io/badge/Languages-English%20%7C%20Japanese-green)
@@ -15,13 +15,15 @@
 
 - 📋 **Menu Bar Integration**: Lives in the macOS status bar (`TrayIcon`) with zero Dock clutter (`LSUIElement = true`).
 - 🖱️ **Right-Click Context Menu**: Right-click or `Ctrl+Click` the status bar icon to open a native menu with **Settings** (`Cmd+,`) and **Quit C2V** (`Cmd+Q`).
-- ⚡ **Smart Text Interception**: Automatically records copied text snippets via background pasteboard monitoring. Intelligently filters out file paths (`.fileURL`) and images/binary files, ignores consecutive duplicates, and caps storage at 100 unpinned items. Re-copying an item updates its timestamp and moves it to the top.
+- ⚡ **Smart Text Interception**: Automatically records copied text snippets via background pasteboard monitoring. Intelligently filters out file paths (`.fileURL`) and images/binary files, ignores consecutive duplicates, and automatically trims older items based on your configured capacity. Re-copying an item updates its timestamp and moves it to the top.
+- ⚙️ **Configurable History Limit**: Customize the maximum number of unpinned items stored locally (slider from 10 to 100 items, default: 50) directly from the Settings window.
 - 🔍 **Real-Time Search & Filtering**: Instant case-insensitive text search with a quick clear action, plus a pin filter toggle to switch between all items and pinned snippets.
 - 📌 **Pin & Organize**: Pin frequently used code snippets or important text snippets to keep them permanently at the top of your clipboard history.
-- 👁️ **Quick Look Inspector**: Pop up an inspector modal with monospaced text preview, character, word, and line count statistics, relative date timestamp, and quick action buttons.
+- 👁️ **Quick Look Inspector**: Pop up an inspector modal with monospaced text preview, character, word, and line count statistics, formatted date and time timestamp, and quick action buttons (Copy, Pin, Delete).
 - 🎨 **Liquid Glass UI Styling**: Adopts macOS 26+ Liquid Glass visual effects (`liquidGlassEffect`) with graceful material fallbacks (`.ultraThinMaterial` / `.regularMaterial`) on earlier macOS versions.
 - 🗑️ **Selective History Clearing**: Custom confirmation dialog to clear unpinned items while keeping pinned favorites, or clear everything at once.
 - ⬆️ **Scroll to Top**: Floating action button automatically appears when scrolling down for quick return to the top of your list.
+- 🚪 **Quick Quit Option**: Cleanly quit the application either via the popover footer button or via the right-click status bar context menu (`Cmd+Q`).
 - 🚀 **Auto Start on Boot**: Toggle auto-launch at login powered natively by Apple's `ServiceManagement` framework (`SMAppService`).
 - 🔒 **100% Local & Private**: All clipboard history is stored strictly on your local device using `SwiftData`. Zero telemetry, zero tracking, zero external network requests.
 - 🌐 **Multilingual Support**: Fully localized in **English** and **Japanese** using Apple's String Catalog (`Localizable.xcstrings`).
@@ -44,9 +46,10 @@ C2V/
 │   │   ├── MenuBarExtraRightClickMonitor.swift # NSEvent listener for status bar item right-click context menu
 │   │   ├── QuickLookOverlay.swift              # Text inspector modal with word/line/char stats and actions
 │   │   ├── ScrollToTopButton.swift             # Floating action button for quick top scrolling
-│   │   └── SettingsView.swift                  # Form view for launch-at-login, storage info, & privacy links
+│   │   └── SettingsView.swift                  # Form view for launch-at-login, history limit slider, & privacy links
 │   ├── Logics/
 │   │   ├── ClipboardMonitor.swift              # Real-time pasteboard polling, deduplication, & SwiftData sync
+│   │   ├── HistoryLimitManager.swift           # Configurable history capacity limits (10–100 items, default 50)
 │   │   └── LaunchAtLoginManager.swift          # Auto-start helper utilizing ServiceManagement (SMAppService)
 │   └── Models/
 │       └── CopiedItem.swift                    # SwiftData persistent model schema
@@ -64,7 +67,7 @@ C2V/
 ## 🛠️ Tech Stack & Architecture
 
 - **Language**: Swift 5
-- **UI Framework**: SwiftUI (macOS 13.0+)
+- **UI Framework**: SwiftUI (macOS 15.6+)
 - **Menu Bar Engine**: `MenuBarExtra` (`.window` style) with custom `NSEvent` status bar monitoring
 - **Data Persistence**: SwiftData (`@Model`, `ModelContainer`, `FetchDescriptor`, `#Predicate`)
 - **System Integration**: `ServiceManagement` (`SMAppService.mainApp`) for Launch at Login
@@ -86,8 +89,8 @@ Or visit the App Store page: [C2V - コピペ記録アプリ on the Mac App Stor
 ## 💻 Requirements & Building
 
 ### Prerequisites
-- macOS 13.0 (Ventura) or later
-- Xcode 15.0+ with Swift 5 support
+- macOS 15.6 (Sequoia) or later
+- Xcode 16.0+ with Swift 5 support
 
 ### Building & Running
 1. Clone the repository:

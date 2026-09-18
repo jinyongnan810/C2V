@@ -3,6 +3,7 @@
 //  C2VTests
 //
 
+import AppIntents
 @testable import C2V
 import Foundation
 import SwiftData
@@ -88,5 +89,83 @@ struct C2VTests {
         #expect(unpinnedItems.count == 10)
         #expect(pinnedItems.count == 2)
         #expect(allItems.count == 12)
+    }
+
+    /// Tests CopiedItemEntity representation and conversion from SwiftData model.
+    @Test func testCopiedItemEntityConversion() throws {
+        let item = CopiedItem(text: "Sample clipboard text for entity testing")
+        let entity = CopiedItemEntity(from: item)
+
+        #expect(entity.id == item.id)
+        #expect(entity.text == item.text)
+        #expect(entity.characterCount == item.characterCount)
+        #expect(entity.isPinned == false)
+        #expect(entity.displayRepresentation.title != "")
+    }
+
+    /// Tests SearchClipboardIntent execution and dialog results.
+    @MainActor
+    @Test func testSearchClipboardIntent() async throws {
+        let context = C2VApp.sharedModelContainer.mainContext
+        let uniqueWord = "UniqueSnippetWord\(UUID().uuidString.prefix(6))"
+        let item = CopiedItem(text: "Test snippet containing \(uniqueWord)")
+        context.insert(item)
+        try context.save()
+
+        let intent = SearchClipboardIntent(query: String(uniqueWord))
+        let result = try await intent.perform()
+        let matchingItems = try #require(result.value)
+        #expect(matchingItems.count >= 1)
+        #expect(matchingItems.contains(where: { $0.text.contains(uniqueWord) }))
+
+        // Clean up
+        context.delete(item)
+        try context.save()
+    }
+
+    /// Tests CopyLatestSnippetIntent fetching and pasteboard copying.
+    @MainActor
+    @Test func testCopyLatestSnippetIntent() async throws {
+        let context = C2VApp.sharedModelContainer.mainContext
+        let testText = "Latest snippet for Siri test: \(UUID().uuidString)"
+        let item = CopiedItem(text: testText)
+        item.createdAt = Date().addingTimeInterval(10)
+        context.insert(item)
+        try context.save()
+
+        let intent = CopyLatestSnippetIntent()
+        let result = try await intent.perform()
+        #expect(result.value == testText)
+
+        // Clean up
+        context.delete(item)
+        try context.save()
+    }
+
+    /// Tests FoundationModels AI tool calls on macOS 27 or newer.
+    @MainActor
+    @Test func testMacOS27FoundationModelTools() async throws {
+        #if canImport(FoundationModels)
+            if #available(macOS 27.0, *) {
+                let context = C2VApp.sharedModelContainer.mainContext
+                let aiKeyword = "AIKeyword\(UUID().uuidString.prefix(6))"
+                let item = CopiedItem(text: "FoundationModels snippet \(aiKeyword)")
+                context.insert(item)
+                try context.save()
+
+                let searchTool = SearchClipboardAITool()
+                let searchResults = try await searchTool.call(arguments: SearchClipboardAITool.Arguments(query: String(aiKeyword), limit: 5))
+                #expect(!searchResults.isEmpty)
+                #expect(searchResults.first?.contains(aiKeyword) == true)
+
+                let copyTool = CopySnippetAITool()
+                let copyResult = try await copyTool.call(arguments: CopySnippetAITool.Arguments(text: "Copied via AI tool"))
+                #expect(copyResult.contains("Successfully copied"))
+
+                // Clean up
+                context.delete(item)
+                try context.save()
+            }
+        #endif
     }
 }

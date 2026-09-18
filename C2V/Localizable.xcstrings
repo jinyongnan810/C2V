@@ -1,6 +1,54 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@ snippet successfully." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ snippet successfully."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スニペットを正常に%@しました。"
+          }
+        }
+      }
+    },
+    "%@ • %lld chars%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1 • %2 chars%3"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1 • %2%3"
+          }
+        }
+      }
+    },
     "%@, %@, %lld characters%@" : {
       "localizations" : {
         "en" : {
@@ -34,7 +82,14 @@
       }
     },
     "%lld" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld characters, %lld words, %lld lines" : {
       "extractionState" : "stale",
@@ -132,9 +187,6 @@
         }
       }
     },
-    "•" : {
-
-    },
     "All clipboard history is stored strictly on your local device. C2V does not collect, track, or transmit any data." : {
       "localizations" : {
         "ja" : {
@@ -178,6 +230,26 @@
         }
       }
     },
+    "Character Count" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字数"
+          }
+        }
+      }
+    },
+    "Clear Clipboard History" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード履歴を消去"
+          }
+        }
+      }
+    },
     "Clear Clipboard History?" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -211,6 +283,17 @@
         }
       }
     },
+    "Clear Unpinned Items" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留め以外の項目を消去"
+          }
+        }
+      }
+    },
     "Clear search text" : {
       "localizations" : {
         "ja" : {
@@ -221,13 +304,54 @@
         }
       }
     },
-    "Clear Unpinned Items" : {
-      "extractionState" : "manual",
+    "Cleared %lld unpinned items from clipboard history." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleared %lld unpinned items from clipboard history."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード履歴からピン留めされていない%lld件の項目を消去しました。"
+          }
+        }
+      }
+    },
+    "Cleared all %lld items from clipboard history." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cleared all %lld items from clipboard history."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード履歴からすべての項目（%lld件）を消去しました。"
+          }
+        }
+      }
+    },
+    "Clears unpinned or all clipboard history in C2V." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ピン留め以外の項目を消去"
+            "value" : "C2Vのピン留めされていない項目、またはすべてのクリップボード履歴を消去します。"
+          }
+        }
+      }
+    },
+    "Clipboard Snippet" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードスニペット"
           }
         }
       }
@@ -260,6 +384,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "クイックルックを閉じる"
+          }
+        }
+      }
+    },
+    "Copied \"%@\" to your clipboard." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied \"%@\" to your clipboard."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」をクリップボードにコピーしました。"
+          }
+        }
+      }
+    },
+    "Copied latest snippet: \"%@\"." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copied latest snippet: \"%@\"."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新のスニペット「%@」をコピーしました。"
           }
         }
       }
@@ -306,6 +462,16 @@
         }
       }
     },
+    "Copies the most recent clipboard entry back to your clipboard." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新のクリップボード項目をクリップボードに再コピーします。"
+          }
+        }
+      }
+    },
     "Copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -313,6 +479,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピー"
+          }
+        }
+      }
+    },
+    "Copy Latest Snippet" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最新のスニペットをコピー"
+          }
+        }
+      }
+    },
+    "Copy Snippet to Clipboard" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スニペットをクリップボードにコピー"
           }
         }
       }
@@ -334,6 +520,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "テキストをコピー"
+          }
+        }
+      }
+    },
+    "Created At" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作成日時"
           }
         }
       }
@@ -409,6 +605,16 @@
         }
       }
     },
+    "Failed to access clipboard history." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード履歴へのアクセスに失敗しました。"
+          }
+        }
+      }
+    },
     "Filter Pinned Items" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -473,6 +679,26 @@
         }
       }
     },
+    "Include Pinned Snippets" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留めされたスニペットを含める"
+          }
+        }
+      }
+    },
+    "Is Pinned" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピン留め済み"
+          }
+        }
+      }
+    },
     "Launch C2V automatically when macOS starts." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -502,6 +728,32 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "該当する結果がありません"
+          }
+        }
+      }
+    },
+    "No clipboard history found in C2V." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C2Vにクリップボード履歴が見つかりません。"
+          }
+        }
+      }
+    },
+    "No clipboard items found matching \"%@\"." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No clipboard items found matching \"%@\"."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」に一致するクリップボード項目は見つかりませんでした。"
           }
         }
       }
@@ -578,12 +830,32 @@
         }
       }
     },
+    "Pins or unpins a clipboard snippet in C2V." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C2Vのクリップボードスニペットのピン留めを切り替えます。"
+          }
+        }
+      }
+    },
     "Privacy & Security" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "プライバシーとセキュリティ"
+          }
+        }
+      }
+    },
+    "Puts a selected C2V snippet onto the macOS clipboard." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したC2VスニペットをmacOSのクリップボードにコピーします。"
           }
         }
       }
@@ -630,6 +902,36 @@
         }
       }
     },
+    "Search Clipboard" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボードを検索"
+          }
+        }
+      }
+    },
+    "Search Clipboard History" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリップボード履歴を検索"
+          }
+        }
+      }
+    },
+    "Search Query" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索クエリ"
+          }
+        }
+      }
+    },
     "Search copied text" : {
       "localizations" : {
         "ja" : {
@@ -647,6 +949,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "コピーしたテキストを検索..."
+          }
+        }
+      }
+    },
+    "Searches clipboard snippets saved in C2V." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C2Vに保存されたクリップボードスニペットを検索します。"
           }
         }
       }
@@ -679,6 +991,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留めされていない項目とピン留めされた項目の両方を表示します"
+          }
+        }
+      }
+    },
+    "Snippet" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スニペット"
+          }
+        }
+      }
+    },
+    "Snippet not found." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スニペットが見つかりません。"
           }
         }
       }
@@ -722,6 +1054,16 @@
         }
       }
     },
+    "Text" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキスト"
+          }
+        }
+      }
+    },
     "This action cannot be undone. Choose whether to keep pinned items or clear everything." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -729,6 +1071,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "この操作は取り消せません。ピン留めされた項目を保持するか、すべて消去するかを選択してください。"
+          }
+        }
+      }
+    },
+    "Toggle Pin for Snippet" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スニペットのピン留めを切り替え"
           }
         }
       }
@@ -781,6 +1133,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "プライバシーポリシーを表示"
+          }
+        }
+      }
+    },
+    "•" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
           }
         }
       }

@@ -3,6 +3,7 @@
 //  C2V
 //
 
+import AppIntents
 import SwiftUI
 
 /// Inspector modal presenting full selectable snippet text, metadata statistics, and quick action controls.
@@ -151,6 +152,10 @@ struct QuickLookOverlay: View {
             .shadow(color: Color.black.opacity(0.3), radius: 16, x: 0, y: 8)
             .padding(.horizontal, 20)
             .accessibilityAddTraits(.isModal)
+            .userActivity("com.kinn.C2V.inspectSnippet") { activity in
+                activity.title = "Inspect Clipboard Snippet"
+                activity.appEntityIdentifier = EntityIdentifier(for: CopiedItemEntity(from: item))
+            }
         }
     }
 }

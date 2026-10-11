@@ -122,4 +122,8 @@ C2V is committed to user privacy. All copied text history remains 100% local on 
 
 ## 📄 License
 
-This project is open-source. Refer to the repository for licensing terms.
+C2V is source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+You may use, copy, modify, and redistribute the software for noncommercial purposes under the license terms. When redistributing, include the license text or its URL and the required copyright notice. Commercial use requires separate permission from the copyright holder. See [LICENSE](LICENSE) for the full terms, including the permissions for noncommercial organizations.
+
+C2V is also available for free on the Mac App Store. The repository license does not restrict the copyright holder's own distribution of C2V. Third-party components, if any, remain subject to their own licenses.

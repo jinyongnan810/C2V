@@ -12,6 +12,8 @@ import SwiftData
 @MainActor
 @Observable
 final class ClipboardMonitor {
+    static let preserveItemOrderKey = "preserveItemOrderWhenCopying"
+
     @ObservationIgnored private var timer: Timer?
     @ObservationIgnored private var cleanupTimer: Timer?
     @ObservationIgnored private var lastChangeCount: Int
@@ -22,6 +24,7 @@ final class ClipboardMonitor {
 
     /// Initializes the clipboard monitor with the current system pasteboard change count.
     init() {
+        UserDefaults.standard.register(defaults: [Self.preserveItemOrderKey: true])
         lastChangeCount = pasteboard.changeCount
     }
 
@@ -102,14 +105,16 @@ final class ClipboardMonitor {
         }
     }
 
-    /// Writes specified text to NSPasteboard, updates change count, and refreshes item creation timestamp to bring it to the top.
+    /// Writes text to NSPasteboard and moves the item to the top unless preserving item order is enabled.
     func copyToClipboard(_ text: String, modelContext: ModelContext) {
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
         // Update lastChangeCount so monitoring doesn't treat our own copy as a brand new item
         lastChangeCount = pasteboard.changeCount
 
-        // Optional: Update timestamp of copied item to move it to top
+        guard !UserDefaults.standard.bool(forKey: Self.preserveItemOrderKey) else { return }
+
+        // Update timestamp of copied item to move it to top
         var fetchDescriptor = FetchDescriptor<CopiedItem>(
             predicate: #Predicate { $0.text == text }
         )

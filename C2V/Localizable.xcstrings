@@ -514,6 +514,16 @@
         }
       }
     },
+    "Copy items from history without moving them to the top." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴の項目を先頭に移動せずにコピーします。"
+          }
+        }
+      }
+    },
     "Copy text" : {
       "localizations" : {
         "ja" : {
@@ -695,6 +705,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ピン留め済み"
+          }
+        }
+      }
+    },
+    "Keep Item Order When Copying" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー時に項目の順序を維持"
           }
         }
       }

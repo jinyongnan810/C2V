@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(ClipboardMonitor.self) private var monitor: ClipboardMonitor
     @State private var launchAtLogin = LaunchAtLoginManager()
     @AppStorage(HistoryLimitManager.historyLimitKey) private var historyLimit: Int = HistoryLimitManager.defaultLimit
+    @AppStorage(ClipboardMonitor.preserveItemOrderKey) private var preserveItemOrderWhenCopying = true
 
     /// Renders grouped form layout with auto-start toggle, storage limit slider, and privacy policy link.
     var body: some View {
@@ -28,6 +29,18 @@ struct SettingsView: View {
                         Text("Launch C2V automatically when macOS starts.")
                             .font(.caption)
                             .foregroundColor(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+
+                Toggle(isOn: $preserveItemOrderWhenCopying) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Keep Item Order When Copying")
+                            .font(.body)
+                            .fontWeight(.medium)
+                        Text("Copy items from history without moving them to the top.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .toggleStyle(.switch)
@@ -99,7 +112,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 380, height: 410)
+        .frame(width: 380, height: 490)
         .onAppear {
             launchAtLogin.checkStatus()
         }

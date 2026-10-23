@@ -17,7 +17,7 @@ struct ContentView: View {
 
     @State private var searchText: String = ""
     @State private var filterPinnedOnly: Bool = false
-    @State private var copiedToastItemText: String? = nil
+    @State private var copiedToastID: UUID? = nil
     @State private var showClearConfirmation: Bool = false
     @State private var isScrolledDown: Bool = false
     @State private var selectedQuickLookItem: CopiedItem? = nil
@@ -85,10 +85,14 @@ struct ContentView: View {
                     }
 
                     // Toast notification when item is copied
-                    if let text = copiedToastItemText {
-                        toastOverlay(text: text)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: copiedToastItemText)
+                    if let toastID = copiedToastID {
+                        toastOverlay
+                            .id(toastID)
+                            .transition(reduceMotion ? .opacity : .asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .opacity
+                            ))
+                            .allowsHitTesting(false)
                     }
                 }
 
@@ -168,6 +172,19 @@ struct ContentView: View {
         }
         .onDisappear {
             isScrolledDown = false
+            copiedToastID = nil
+        }
+        .task(id: copiedToastID) {
+            guard let toastID = copiedToastID else { return }
+            do {
+                try await Task.sleep(for: .seconds(1.5))
+            } catch {
+                return
+            }
+            guard !Task.isCancelled, copiedToastID == toastID else { return }
+            withAnimation(.easeOut(duration: 0.2)) {
+                copiedToastID = nil
+            }
         }
         .onChange(of: searchText) { _, _ in
             isScrolledDown = false
@@ -363,7 +380,7 @@ struct ContentView: View {
 
     /// Toast notification banner displayed temporarily when a snippet is copied to clipboard.
     @ViewBuilder
-    private func toastOverlay(text _: String) -> some View {
+    private var toastOverlay: some View {
         VStack {
             Spacer()
             HStack(spacing: 8) {
@@ -439,15 +456,8 @@ struct ContentView: View {
     /// Re-copies selected snippet text to pasteboard and displays copy confirmation toast.
     private func copyItem(_ item: CopiedItem) {
         monitor.copyToClipboard(item.text, modelContext: modelContext)
-        withAnimation {
-            copiedToastItemText = item.text
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            withAnimation {
-                if copiedToastItemText == item.text {
-                    copiedToastItemText = nil
-                }
-            }
+        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.3, dampingFraction: 0.7)) {
+            copiedToastID = UUID()
         }
     }
 

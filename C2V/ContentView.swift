@@ -303,7 +303,7 @@ struct ContentView: View {
     @ViewBuilder
     private func itemList(items: [CopiedItem]) -> some View {
         ScrollViewReader { proxy in
-            ZStack(alignment: .bottomTrailing) {
+            ZStack(alignment: .bottom) {
                 List {
                     Color.clear
                         .frame(height: 0.5)
@@ -349,7 +349,6 @@ struct ContentView: View {
                             proxy.scrollTo("scrollTopTarget", anchor: .top)
                         }
                     }
-                    .padding(.trailing, 14)
                     .padding(.bottom, 14)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
